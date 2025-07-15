@@ -4,9 +4,9 @@ const games = [
     title: 'Drive Mad',
     icon: 'https://cpsgames.org//thumbs/drive-mad_2.webp', // Using link as requested for now
     iframeSrc: 'https://lolygames.github.io/drive-mad/',
-    description: `Drive Mad is an exhilarating car game that challenges you to navigate through tracks laden with obstacles, aiming to cross the finish line intact. Mastering your vehicle's speed is crucial to prevent it from flipping amidst the myriad of daring stunts and inventive obstacles presented across each level.
+    description: `Drive Mad is a fun car game where you drive on tracks with lots of obstacles. Try to get to the finish line without crashing! You need to be good at controlling your speed to do cool stunts and get past all the tricky parts.
 
-The game tests your driving prowess and ability to tackle increasingly complex courses with precision. Are you equipped with the skills required to conquer every level in Drive Mad, proving your mettle in this thrilling automotive adventure?`,
+Can you beat every level and show off your amazing driving skills?`,
     controls: [
       'Steer forward - W, D, X, Up arrow, Right arrow, Mouse click',
       'Steer backward - S, A, Z, Down arrow, Left arrow'
@@ -24,7 +24,7 @@ The game tests your driving prowess and ability to tackle increasingly complex c
     id: 'axiom', // Unique ID
     title: 'Axiom', // Example Title
     icon: 'https://via.placeholder.com/150/00ffff/1a1a1a?text=Axiom', // Example Icon
-    description: 'This game uses a special launch method with proxies.', // Description (optional for modal type)
+    description: 'This game uses a special way to open with proxies.', // Description (optional for modal type)
     controls: ['Depends on launch method'], // Controls (optional for modal type)
     tags: ['Special', 'Proxy'], // Tags (optional for modal type)
     genres: ['Arcade', 'Shooting'], // Assign to a genre
@@ -41,7 +41,7 @@ The game tests your driving prowess and ability to tackle increasingly complex c
     title: 'Cool Strategy Game',
     icon: 'https://via.placeholder.com/150/ff00ff/1a1a1a?text=Game+Icon+3', // Placeholder icon
     iframeSrc: 'https://example.com/games/strategy/', // Replace with actual game URL
-    description: 'Plan your moves carefully!',
+    description: 'Plan your moves to win!',
     controls: ['Mouse Click'],
     tags: ['Strategy', 'Puzzle'],
     genres: ['Strategy', 'Puzzle'],

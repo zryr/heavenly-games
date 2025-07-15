@@ -362,6 +362,18 @@ body {
     color: #1a1a1a;
 }
 
+.favorite-btn {
+    background: none;
+    border: none;
+    color: var(--accent-cyan);
+    font-size: 1.5em;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 20px;
+    width: 100%;
+    text-align: right;
+}
+
 /* --- Modal Animation Keyframes --- */
 @keyframes fadeIn {
     from { opacity: 0; }

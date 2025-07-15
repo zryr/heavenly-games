@@ -24,6 +24,7 @@ const gameDescriptionElement = gameDetailView.querySelector('#game-description p
 const gameControlsList = gameDetailView.querySelector('#game-controls ul');
 const gameTagsList = gameDetailView.querySelector('#game-tags .tags-list');
 const fullscreenBtn = document.getElementById('fullscreen-btn');
+const favoriteBtn = document.getElementById('favorite-btn');
 const sidebarNavLinks = document.querySelectorAll('.sidebar-nav a');
 const mainContent = document.querySelector('.main-content'); // Added reference for event delegation
 
@@ -215,6 +216,13 @@ function showGameDetail(gameId) {
     }
     history.pushState({ view: 'game', gameId: gameId }, game.title, `?game=${gameId}`);
     body.classList.add('game-view-active');
+
+    const favoritedIds = getFavoritedGamesIds();
+    if (favoritedIds.includes(gameId)) {
+        favoriteBtn.innerHTML = '<i class="fas fa-star"></i>';
+    } else {
+        favoriteBtn.innerHTML = '<i class="far fa-star"></i>';
+    }
 }
 
 // --- Modal Functions ---
@@ -427,4 +435,16 @@ document.querySelector('.sidebar-nav').addEventListener('click', (event) => {
 });
 fullscreenBtn.addEventListener('click', () => {
     gameIframe.requestFullscreen?.();
+});
+
+favoriteBtn.addEventListener('click', () => {
+    const gameId = new URLSearchParams(window.location.search).get('game');
+    const favoritedIds = getFavoritedGamesIds();
+    if (favoritedIds.includes(gameId)) {
+        removeFavoriteGame(gameId);
+        favoriteBtn.innerHTML = '<i class="far fa-star"></i>';
+    } else {
+        addFavoriteGame(gameId);
+        favoriteBtn.innerHTML = '<i class="fas fa-star"></i>';
+    }
 });
