@@ -168,7 +168,48 @@ function showGameDetail(gameId) {
     // Populate tags (handle optional properties)
     gameTagsList.innerHTML = '';
     if (game.tags && game.tags.length > 0) {
-         game.tags.forEach(tag => { const span = document.createElement('span'); span.classList.add('tag'); span.textContent = tag; gameTagsList.appendChild(span); });
+                game.tags.forEach(tag => {
+                    const- span = document.createElement('span');
+                    span.classList.add('tag');
+                    let iconClass = '';
+                    switch (tag.toLowerCase()) {
+                        case 'car':
+                            iconClass = 'fas fa-car';
+                            break;
+                        case 'strategy':
+                            iconClass = 'fas fa-brain';
+                            break;
+                        case 'pc only':
+                            iconClass = 'fas fa-desktop';
+                            break;
+                        case 'keyboard needed':
+                            iconClass = 'fas fa-keyboard';
+                            break;
+                        case 'mobile supported':
+                            iconClass = 'fas fa-mobile-alt';
+                            break;
+                        case 'arcade':
+                            iconClass = 'fas fa-gamepad';
+                            break;
+                        case 'shooting':
+                            iconClass = 'fas fa-crosshairs';
+                            break;
+                        case 'special':
+                            iconClass = 'fas fa-star';
+                            break;
+                        case 'proxy':
+                            iconClass = 'fas fa-server';
+                            break;
+                        case 'puzzle':
+                            iconClass = 'fas fa-puzzle-piece';
+                            break;
+                        default:
+                            iconClass = 'fas fa-tag';
+                    }
+                    span.innerHTML = `<i class="${iconClass}"></i>`;
+                    span.setAttribute('title', tag);
+                    gameTagsList.appendChild(span);
+                });
     } else {
         gameTagsList.innerHTML = '<span>No tags listed.</span>';
     }
