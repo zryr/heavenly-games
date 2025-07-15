@@ -170,7 +170,7 @@ function showGameDetail(gameId) {
     gameTagsList.innerHTML = '';
     if (game.tags && game.tags.length > 0) {
                 game.tags.forEach(tag => {
-                    const- span = document.createElement('span');
+                    const span = document.createElement('span');
                     span.classList.add('tag');
                     let iconClass = '';
                     switch (tag.toLowerCase()) {
