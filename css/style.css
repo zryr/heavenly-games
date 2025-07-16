@@ -267,15 +267,6 @@ body {
     text-overflow: ellipsis; /* Add ellipsis if title is too long */
 }
 
-#new-games-banner {
-    width: 100%;
-    height: 300px;
-    background-size: cover;
-    background-position: center;
-    margin-bottom: 20px;
-    border-radius: 8px;
-}
-
 /* --- Game Detail View Styles --- */
 #game-detail-view {
     display: none; /* Hidden by default */

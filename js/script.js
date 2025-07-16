@@ -143,17 +143,7 @@ function showHomepage(filter = 'home', genre = null) {
          const favoritedGames = games.filter(game => favoritedIds.includes(game.id));
          renderGameGrid(popularGames, popularGrid);
          renderGameGrid(trendingGames, trendingGrid);
-         if (newGames.length > 0) {
-            const bannerGame = newGames[0];
-            const newGamesBanner = document.getElementById('new-games-banner');
-            newGamesBanner.style.backgroundImage = `url('${bannerGame.icon}')`;
-            newGamesBanner.addEventListener('click', () => {
-                showGameDetail(bannerGame.id);
-            });
-            renderGameGrid(newGames.slice(1), newGrid);
-         } else {
-            renderGameGrid(newGames, newGrid);
-         }
+         renderGameGrid(newGames, newGrid);
          renderGameGrid(favoritedGames, favoritedGrid);
          // Handle random game navigation directly
          if (filter === 'random' && games.length > 0) {
