@@ -149,14 +149,7 @@ function showHomepage(filter = 'home', genre = null) {
          if (filter === 'random' && games.length > 0) {
              const randomIndex = Math.floor(Math.random() * games.length);
              const randomGame = games[randomIndex];
-             // Use setTimeout to ensure homepage render completes before switching view
-             setTimeout(() => {
-                 if (randomGame.launchType === 'modal') {
-                      openModal(randomGame.id); // Open modal for modal type
-                 } else {
-                      showGameDetail(randomGame.id); // Go to detail page for iframe type
-                 }
-             }, 100);
+             showGameDetail(randomGame.id);
              return;
          }
     }

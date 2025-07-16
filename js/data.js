@@ -21,40 +21,4 @@ Can you beat every level and show off your amazing driving skills?`,
     likes: 0,
     dislikes: 0
   },
-  // Add a new game object that uses the modal launch type
-   {
-    id: 'axiom', // Unique ID
-    title: 'Axiom', // Example Title
-    icon: 'https://placehold.co/150x150/00ffff/1a1a1a?text=Axiom', // Example Icon
-    description: 'This game uses a special way to open with proxies.', // Description (optional for modal type)
-    controls: ['Depends on launch method'], // Controls (optional for modal type)
-    tags: ['Special', 'Proxy'], // Tags (optional for modal type)
-    genres: ['Arcade', 'Shooting'], // Assign to a genre
-    platforms: ['Needs Options'], // Example pill
-    isTrending: true, // Can be trending/new/favorited
-    isNew: true,
-    isFavorited: false,
-    launchType: 'modal', // <-- **This indicates the modal launch**
-    normalUrl: 'https://www.newgrounds.com/portal/view/972740', // URL for normal mode
-    fullscreenUrl: 'https://uploads.ungrounded.net/alternate/6510000/6510853_alternate_303470_r35.zip/', // URL for fullscreen mode (Note: .zip might not work directly in iframe, this is just the provided URL)
-    likes: 0,
-    dislikes: 0
-  },
-   {
-    id: 'example-game-3',
-    title: 'Cool Strategy Game',
-    icon: 'https://placehold.co/150x150/ff00ff/1a1a1a?text=Game+Icon+3', // Placeholder icon
-    iframeSrc: 'https://example.com/games/strategy/', // Replace with actual game URL
-    description: 'Plan your moves to win!',
-    controls: ['Mouse Click'],
-    tags: ['Strategy', 'Puzzle'],
-    genres: ['Strategy', 'Puzzle'],
-    platforms: ['PC Only', 'Mouse Needed'],
-    isTrending: true,
-    isNew: false,
-    isFavorited: false,
-    launchType: 'iframe', // Standard iframe launch
-    likes: 0,
-    dislikes: 0
-  },
 ];
