@@ -348,18 +348,12 @@ body {
 }
 
 #game-tags .tag {
-    background-color: var(--button-bg-color);
-    color: var(--text-color);
-    padding: 5px 10px;
-    border-radius: 5px;
+    background-color: var(--accent-cyan);
+    color: #1a1a1a; /* Dark text on cyan */
+    padding: 4px 10px;
+    border-radius: 12px; /* More rounded pill */
     font-size: 0.9em;
     font-weight: bold;
-    transition: all 0.2s ease-in-out;
-}
-
-#game-tags .tag:hover {
-    background-color: var(--accent-cyan);
-    color: #1a1a1a;
 }
 
 .favorite-btn {
