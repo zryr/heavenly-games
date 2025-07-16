@@ -241,8 +241,6 @@ function showGameDetail(gameId) {
         favoriteBtn.innerHTML = '<i class="far fa-star"></i>';
     }
 
-    // Set background image
-    gameDetailView.style.backgroundImage = `url('${game.icon}')`;
 }
 
 // --- Modal Functions ---
