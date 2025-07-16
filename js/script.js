@@ -80,7 +80,23 @@ function renderGameGrid(gamesToRender, containerElement) {
         gameCard.classList.add('game-card');
         gameCard.dataset.gameId = game.id; // Store game ID for click handling
 
-        const pillsHtml = game.platforms.map(pill => `<span class="pill">${pill}</span>`).join('');
+        const pillsHtml = game.platforms.map(pill => {
+            let iconClass = '';
+            switch (pill.toLowerCase()) {
+                case 'pc only':
+                    iconClass = 'fas fa-desktop';
+                    break;
+                case 'keyboard needed':
+                    iconClass = 'fas fa-keyboard';
+                    break;
+                case 'mobile supported':
+                    iconClass = 'fas fa-mobile-alt';
+                    break;
+                default:
+                    iconClass = 'fas fa-tag';
+            }
+            return `<span class="pill" title="${pill}"><i class="${iconClass}"></i></span>`;
+        }).join('');
 
         gameCard.innerHTML = `
             <div class="pills-container">
@@ -449,6 +465,10 @@ document.querySelector('.sidebar-nav').addEventListener('click', (event) => {
     const link = event.target.closest('a');
     if (!link) return;
     event.preventDefault();
+
+    document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+    link.classList.add('active');
+
     const section = link.dataset.section;
     const genre = link.dataset.genre;
     if (section) showHomepage(section);
