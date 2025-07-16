@@ -263,12 +263,36 @@ body {
     text-overflow: ellipsis; /* Add ellipsis if title is too long */
 }
 
+#new-games-banner {
+    width: 100%;
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
 /* --- Game Detail View Styles --- */
 #game-detail-view {
     display: none; /* Hidden by default */
     padding: 20px;
     background-color: #222;
     border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+#game-detail-view::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: -1;
 }
 
 #game-iframe-container {
@@ -366,6 +390,43 @@ body {
     margin-bottom: 20px;
     width: 100%;
     text-align: right;
+}
+
+.rating-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.rating-btn {
+    background: none;
+    border: none;
+    color: var(--accent-cyan);
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.rating-btn:hover {
+    transform: scale(1.1);
+}
+
+.share-btn {
+    background: none;
+    border: none;
+    color: var(--accent-cyan);
+    font-size: 1.5em;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 20px;
+    width: 100%;
+    text-align: right;
+    transition: all 0.2s ease-in-out;
+}
+
+.share-btn:hover {
+    transform: scale(1.1);
 }
 
 /* --- Modal Animation Keyframes --- */

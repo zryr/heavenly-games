@@ -12,6 +12,7 @@ const searchInput = document.getElementById('search-input');
 const searchResultsContainer = document.getElementById('search-results');
 const homepageView = document.getElementById('homepage-view');
 const gameDetailView = document.getElementById('game-detail-view');
+const popularGrid = document.getElementById('popular-grid');
 const trendingGrid = document.getElementById('trending-grid');
 const newGrid = document.getElementById('new-grid');
 const favoritedGrid = document.getElementById('favorited-grid');
@@ -25,6 +26,9 @@ const gameControlsList = gameDetailView.querySelector('#game-controls ul');
 const gameTagsList = gameDetailView.querySelector('#game-tags .tags-list');
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 const favoriteBtn = document.getElementById('favorite-btn');
+const likeBtn = document.getElementById('like-btn');
+const dislikeBtn = document.getElementById('dislike-btn');
+const shareBtn = document.getElementById('share-btn');
 const sidebarNavLinks = document.querySelectorAll('.sidebar-nav a');
 const mainContent = document.querySelector('.main-content'); // Added reference for event delegation
 
@@ -116,12 +120,24 @@ function showHomepage(filter = 'home', genre = null) {
 
     } else {
          // Render all default sections
+         const popularGames = games.sort((a, b) => (b.likes - b.dislikes) - (a.likes - a.dislikes)).slice(0, 10);
          const trendingGames = games.filter(game => game.isTrending);
          const newGames = games.filter(game => game.isNew);
          const favoritedIds = getFavoritedGamesIds();
          const favoritedGames = games.filter(game => favoritedIds.includes(game.id));
+         renderGameGrid(popularGames, popularGrid);
          renderGameGrid(trendingGames, trendingGrid);
-         renderGameGrid(newGames, newGrid);
+         if (newGames.length > 0) {
+            const bannerGame = newGames[0];
+            const newGamesBanner = document.getElementById('new-games-banner');
+            newGamesBanner.style.backgroundImage = `url('${bannerGame.icon}')`;
+            newGamesBanner.addEventListener('click', () => {
+                showGameDetail(bannerGame.id);
+            });
+            renderGameGrid(newGames.slice(1), newGrid);
+         } else {
+            renderGameGrid(newGames, newGrid);
+         }
          renderGameGrid(favoritedGames, favoritedGrid);
          // Handle random game navigation directly
          if (filter === 'random' && games.length > 0) {
@@ -208,6 +224,9 @@ function showGameDetail(gameId) {
                             iconClass = 'fas fa-tag';
                     }
                     span.innerHTML = `<i class="${iconClass}"></i> ${tag}`;
+                    span.addEventListener('click', () => {
+                        showHomepage('genre', tag);
+                    });
                     gameTagsList.appendChild(span);
                 });
     } else {
@@ -222,6 +241,9 @@ function showGameDetail(gameId) {
     } else {
         favoriteBtn.innerHTML = '<i class="far fa-star"></i>';
     }
+
+    // Set background image
+    gameDetailView.style.backgroundImage = `url('${game.icon}')`;
 }
 
 // --- Modal Functions ---
@@ -446,4 +468,32 @@ favoriteBtn.addEventListener('click', () => {
         addFavoriteGame(gameId);
         favoriteBtn.innerHTML = '<i class="fas fa-star"></i>';
     }
+});
+
+likeBtn.addEventListener('click', () => {
+    const gameId = new URLSearchParams(window.location.search).get('game');
+    const game = games.find(g => g.id === gameId);
+    game.likes++;
+    updateRating(gameId);
+});
+
+dislikeBtn.addEventListener('click', () => {
+    const gameId = new URLSearchParams(window.location.search).get('game');
+    const game = games.find(g => g.id === gameId);
+    game.dislikes++;
+    updateRating(gameId);
+});
+
+function updateRating(gameId) {
+    const game = games.find(g => g.id === gameId);
+    // You can optionally display the rating on the page
+}
+
+shareBtn.addEventListener('click', () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        alert('Link copied to clipboard!');
+    }, () => {
+        alert('Failed to copy link.');
+    });
 });

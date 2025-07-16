@@ -58,6 +58,13 @@
         <main class="main-content">
             <!-- Homepage View (Visible by default or when Home/Category links are clicked) -->
             <section id="homepage-view">
+                <section id="popular-games">
+                    <h2>Popular Games</h2>
+                    <div class="game-grid" id="popular-grid">
+                        <!-- Popular games will be loaded here by JS -->
+                    </div>
+                </section>
+
                 <section id="trending-games">
                     <h2>Trending Games</h2>
                     <div class="game-grid" id="trending-grid">
@@ -66,6 +73,7 @@
                 </section>
 
                 <section id="new-games">
+                    <div id="new-games-banner"></div>
                     <h2>New Games</h2>
                     <div class="game-grid" id="new-grid">
                         <!-- New games will be loaded here by JS -->
@@ -93,6 +101,11 @@
             <section id="game-detail-view" style="display: none;">
                  <h2 id="game-title"></h2>
                  <button id="favorite-btn" class="favorite-btn"><i class="far fa-star"></i></button>
+                 <div class="rating-container">
+                    <button id="like-btn" class="rating-btn"><i class="far fa-thumbs-up"></i></button>
+                    <button id="dislike-btn" class="rating-btn"><i class="far fa-thumbs-down"></i></button>
+                 </div>
+                 <button id="share-btn" class="share-btn"><i class="fas fa-share-alt"></i></button>
                  <div id="game-iframe-container">
                      <!-- Note: The iframe is loaded dynamically by JS -->
                      <iframe id="splash-game-content" frameborder="0" allow="autoplay; fullscreen; gamepad; ambient-light-sensor; encrypted-media" allowfullscreen="" seamless="" scrolling="no" src=""></iframe>
