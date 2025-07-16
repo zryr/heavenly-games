@@ -91,7 +91,7 @@ function renderGameGrid(gamesToRender, containerElement) {
                 default:
                     iconClass = 'fas fa-tag';
             }
-            return `<span class="pill" title="${pill}"><i class="${iconClass}"></i></span>`;
+            return `<span class="pill" title="${pill}"><i class="${iconClass}"></i> ${pill}</span>`;
         }).join('');
 
         gameCard.innerHTML = `
