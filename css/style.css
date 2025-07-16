@@ -241,7 +241,7 @@ body {
     top: 5px; /* Adjust positioning relative to card top */
     right: 5px; /* Adjust positioning relative to card right */
     display: flex;
-    flex-direction: column; /* Stack pills vertically */
+    flex-direction: row; /* Stack pills horizontally */
     gap: 3px;
     z-index: 5; /* Ensure pills are above the image */
 }
