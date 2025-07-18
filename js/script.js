@@ -169,7 +169,7 @@ function showGameDetail(gameId) {
     homepageView.style.display = 'none';
     gameDetailView.style.display = 'block';
 
-    gameTitleElement.textContent = game.title;
+    document.getElementById('game-title-main').textContent = game.title;
     gameIframe.src = game.iframeSrc; // Set the iframe source
     gameDescriptionElement.textContent = game.description || 'No description available.';
 
