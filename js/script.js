@@ -491,7 +491,11 @@ dislikeBtn.addEventListener('click', () => {
 
 function updateRating(gameId) {
     const game = games.find(g => g.id === gameId);
-    // You can optionally display the rating on the page
+    const likeCount = game.likes;
+    const dislikeCount = game.dislikes;
+    const totalVotes = likeCount + dislikeCount;
+    const likePercentage = totalVotes === 0 ? 50 : (likeCount / totalVotes) * 100;
+    document.getElementById('rating-bar-fill').style.width = `${likePercentage}%`;
 }
 
 shareBtn.addEventListener('click', () => {
