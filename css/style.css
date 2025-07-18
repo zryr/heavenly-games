@@ -30,14 +30,23 @@ body {
     left: 0;
     width: 100%;
     height: var(--header-height);
-    background-color: #282828; /* Slightly different dark shade */
+    background-color: #1c1c1f; /* Your current solid background */
+    border-bottom: 1px solid #333; /* A subtle border helps at the top */
+    transition: background-color 0.4s ease, backdrop-filter 0.4s ease;
     color: var(--text-color);
     display: flex;
     align-items: center;
     padding: 0 20px;
     box-sizing: border-box;
-    z-index: 100; /* Stay on top */
+    z-index: 1000; /* Stay on top */
     justify-content: space-between;
+}
+
+.site-header.scrolled {
+    background-color: rgba(28, 28, 31, 0.75); /* Same color, but now semi-transparent */
+    backdrop-filter: blur(12px); /* This is the magic blur effect! */
+    -webkit-backdrop-filter: blur(12px); /* Safari support */
+    border-bottom: 1px solid #444; /* Slightly lighter border for the glass effect */
 }
 
 .site-name {

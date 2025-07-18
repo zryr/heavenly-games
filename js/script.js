@@ -241,6 +241,10 @@ function showGameDetail(gameId) {
         favoriteBtn.innerHTML = '<i class="far fa-star"></i>';
     }
 
+    // Populate related games
+    const relatedGrid = document.getElementById('related-grid');
+    const relatedGames = games.filter(g => g.genres.some(genre => game.genres.includes(genre)) && g.id !== game.id).slice(0, 5);
+    renderGameGrid(relatedGames, relatedGrid);
 }
 
 // --- Modal Functions ---
@@ -497,4 +501,13 @@ shareBtn.addEventListener('click', () => {
     }, () => {
         alert('Failed to copy link.');
     });
+});
+
+window.addEventListener('scroll', function() {
+    const header = document.querySelector('.site-header');
+    if (window.scrollY > 10) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
 });
