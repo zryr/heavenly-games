@@ -59,19 +59,19 @@ body {
 }
 
 .search-container {
-    position: relative; /* Relative to its flex container (header) */
-    flex-grow: 1; /* Allow it to take available space */
-    max-width: 400px; /* Limit max width */
-    margin: 0 auto; /* Center within available space */
+    position: relative;
 }
 
-#search-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #555;
-    border-radius: 8px;
-    background-color: #333;
-    color: var(--text-color);
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+#search-bar {
+    padding-left: 40px !important;
 }
 
 .search-results-dropdown {
@@ -256,8 +256,8 @@ body {
 }
 
 .game-card:hover {
-    transform: translateY(-5px); /* Lift effect */
-    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3); /* Cyan glow */
+    transform: translateY(-5px); /* Lifts the card up */
+    box-shadow: 0 8px 25px rgba(0, 200, 255, 0.3); /* Adds a colored glow */
 }
 
 .game-card img {
@@ -401,25 +401,6 @@ body {
     text-align: right;
 }
 
-.rating-container {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.rating-btn {
-    background: none;
-    border: none;
-    color: var(--accent-cyan);
-    font-size: 1.5em;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
-
-.rating-btn:hover {
-    transform: scale(1.1);
-}
 
 .share-btn {
     background: none;
@@ -436,21 +417,6 @@ body {
 
 .share-btn:hover {
     transform: scale(1.1);
-}
-
-.rating-bar {
-    width: 100%;
-    height: 5px;
-    background-color: #555;
-    border-radius: 5px;
-    margin-top: 10px;
-    overflow: hidden;
-}
-
-.rating-bar-fill {
-    height: 100%;
-    background-color: var(--accent-cyan);
-    width: 50%; /* Default to 50% */
 }
 
 .game-action-bar {

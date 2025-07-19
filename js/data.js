@@ -17,8 +17,6 @@ Can you beat every level and show off your amazing driving skills?`,
     isTrending: true,
     isNew: true, // Example of a new game
     isFavorited: false, // Default, will check localStorage
-    launchType: 'iframe', // Standard iframe launch
-    likes: 0,
-    dislikes: 0
+    launchType: 'iframe' // Standard iframe launch
   },
 ];

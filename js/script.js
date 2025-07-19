@@ -26,8 +26,6 @@ const gameControlsList = gameDetailView.querySelector('#game-controls ul');
 const gameTagsList = gameDetailView.querySelector('#game-tags .tags-list');
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 const favoriteBtn = document.getElementById('favorite-btn');
-const likeBtn = document.getElementById('like-btn');
-const dislikeBtn = document.getElementById('dislike-btn');
 const shareBtn = document.getElementById('share-btn');
 const sidebarNavLinks = document.querySelectorAll('.sidebar-nav a');
 const mainContent = document.querySelector('.main-content'); // Added reference for event delegation
@@ -475,28 +473,6 @@ favoriteBtn.addEventListener('click', () => {
     }
 });
 
-likeBtn.addEventListener('click', () => {
-    const gameId = new URLSearchParams(window.location.search).get('game');
-    const game = games.find(g => g.id === gameId);
-    game.likes++;
-    updateRating(gameId);
-});
-
-dislikeBtn.addEventListener('click', () => {
-    const gameId = new URLSearchParams(window.location.search).get('game');
-    const game = games.find(g => g.id === gameId);
-    game.dislikes++;
-    updateRating(gameId);
-});
-
-function updateRating(gameId) {
-    const game = games.find(g => g.id === gameId);
-    const likeCount = game.likes;
-    const dislikeCount = game.dislikes;
-    const totalVotes = likeCount + dislikeCount;
-    const likePercentage = totalVotes === 0 ? 50 : (likeCount / totalVotes) * 100;
-    document.getElementById('rating-bar-fill').style.width = `${likePercentage}%`;
-}
 
 shareBtn.addEventListener('click', () => {
     const url = window.location.href;
