@@ -73,7 +73,7 @@ body {
 
 #search-input {
     width: 100%;
-    padding: 10px 40px 10px 15px;
+    padding: 10px 15px 10px 40px;
     border: 1px solid #555;
     border-radius: 50px;
     background-color: #333;
