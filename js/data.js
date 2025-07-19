@@ -19,4 +19,20 @@ Can you beat every level and show off your amazing driving skills?`,
     isFavorited: false, // Default, will check localStorage
     launchType: 'iframe' // Standard iframe launch
   },
+  {
+    id: 'driven-wild',
+    title: 'Driven Wild',
+    icon: 'https://placehold.co/150x150/ff0000/1a1a1a?text=Driven+Wild',
+    description: 'Drive wild in this awesome racing game!',
+    controls: ['Arrow keys to drive'],
+    tags: ['Driving', 'Racing'],
+    genres: ['Driving', 'Racing'],
+    platforms: ['PC Only', 'Keyboard Needed'],
+    isTrending: true,
+    isNew: true,
+    isFavorited: false,
+    launchType: 'modal',
+    normalUrl: 'https://www.newgrounds.com/portal/view/972740',
+    fullscreenUrl: 'https://uploads.ungrounded.net/alternate/6510000/6510853_alternate_303470_r35.zip/'
+  },
 ];
