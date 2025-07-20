@@ -377,8 +377,8 @@ modalGoButton.addEventListener('click', () => {
     }
 
     let finalUrl = targetUrl;
-    if (selectedUnblocker === 'proxy1') finalUrl = PROXY_URL_1 + encodeURIComponent(targetUrl);
-    else if (selectedUnblocker === 'proxy2') finalUrl = PROXY_URL_2 + encodeURIComponent(targetUrl);
+            if (selectedUnblocker === 'proxy1') finalUrl = PROXY_URL_1 + targetUrl;
+            else if (selectedUnblocker === 'proxy2') finalUrl = PROXY_URL_2 + targetUrl;
 
     window.open(finalUrl, '_blank');
     closeModal();
