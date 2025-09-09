@@ -21,7 +21,9 @@
                 <!-- Search results will be dynamically added here by JS -->
             </div>
         </div>
-        <!-- Add social links or other header elements here if needed -->
+        <div class="header-icons">
+            <button id="settings-btn" class="icon-btn" aria-label="Settings"><i class="fas fa-cog"></i></button>
+        </div>
     </header>
 
     <div class="layout-container">
@@ -141,6 +143,45 @@
                 </section>
             </section>
 
+            <!-- Settings View (Hidden by default) -->
+            <section id="settings-view" style="display: none;">
+                <h2>Settings</h2>
+
+                <div class="settings-section">
+                    <h3><i class="fas fa-paint-brush"></i> Appearance</h3>
+                    <div class="setting-item">
+                        <label for="site-title-input">Site Title</label>
+                        <input type="text" id="site-title-input" placeholder="Enter new title">
+                    </div>
+                    <div class="setting-item">
+                        <label for="site-icon-input">Site Icon URL</label>
+                        <input type="text" id="site-icon-input" placeholder="Enter new icon URL">
+                    </div>
+                    <div class="setting-item">
+                        <label>Preset Icons</label>
+                        <div class="preset-icons" id="preset-icons-container">
+                            <!-- Presets will be loaded here by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3><i class="fas fa-keyboard"></i> Panic Mode</h3>
+                    <div class="setting-item">
+                        <label for="panic-key-input">Panic Key</label>
+                        <input type="text" id="panic-key-input" readonly placeholder="Click and press a key">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3><i class="fas fa-undo"></i> Reset</h3>
+                     <div class="setting-item">
+                        <button id="reset-settings-btn" class="btn-danger">Reset All Settings</button>
+                    </div>
+                </div>
+
+            </section>
+
         </main>
     </div>
 
@@ -173,5 +214,11 @@
 
     <script src="js/data.js"></script>
     <script src="js/script.js"></script>
+
+    <!-- Panic Mode Overlay -->
+    <div id="panic-overlay" style="display: none;">
+        <h1>404 Not Found</h1>
+        <p>The requested URL was not found on this server.</p>
+    </div>
 </body>
 </html>

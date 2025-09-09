@@ -12,6 +12,13 @@ const searchInput = document.getElementById('search-input');
 const searchResultsContainer = document.getElementById('search-results');
 const homepageView = document.getElementById('homepage-view');
 const gameDetailView = document.getElementById('game-detail-view');
+const settingsView = document.getElementById('settings-view');
+const siteTitleInput = document.getElementById('site-title-input');
+const siteIconInput = document.getElementById('site-icon-input');
+const presetIconsContainer = document.getElementById('preset-icons-container');
+const panicKeyInput = document.getElementById('panic-key-input');
+const resetSettingsBtn = document.getElementById('reset-settings-btn');
+const panicOverlay = document.getElementById('panic-overlay');
 const popularGrid = document.getElementById('popular-grid');
 const trendingGrid = document.getElementById('trending-grid');
 const newGrid = document.getElementById('new-grid');
@@ -27,6 +34,7 @@ const gameTagsList = gameDetailView.querySelector('#game-tags .tags-list');
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 const favoriteBtn = document.getElementById('favorite-btn');
 const shareBtn = document.getElementById('share-btn');
+const settingsBtn = document.getElementById('settings-btn');
 const sidebarNavLinks = document.querySelectorAll('.sidebar-nav a');
 const mainContent = document.querySelector('.main-content'); // Added reference for event delegation
 
@@ -36,6 +44,98 @@ const modalCloseBtn = modalOverlay.querySelector('.modal-close-btn');
 const modalModeButtons = modalOverlay.querySelectorAll('#modal-mode-options .modal-button');
 const modalUnblockButtons = modalOverlay.querySelectorAll('#modal-unblock-options .modal-button');
 const modalGoButton = document.getElementById('modal-go-button');
+
+// --- Settings ---
+const PRESET_ICONS = [
+    'images/drive-mad.webp',
+    'https://www.google.com/s2/favicons?domain=google.com',
+    'https://www.google.com/s2/favicons?domain=youtube.com',
+    'https://www.google.com/s2/favicons?domain=discord.com'
+];
+
+function applyAppearanceSettings() {
+    const savedTitle = localStorage.getItem('siteTitle');
+    const savedIcon = localStorage.getItem('siteIcon');
+
+    if (savedTitle) {
+        document.title = savedTitle;
+        siteTitleInput.value = savedTitle;
+    }
+
+    if (savedIcon) {
+        document.querySelector('link[rel="shortcut icon"]').href = savedIcon;
+        siteIconInput.value = savedIcon;
+    }
+
+    // Populate preset icons
+    presetIconsContainer.innerHTML = '';
+    PRESET_ICONS.forEach(iconUrl => {
+        const img = document.createElement('img');
+        img.src = iconUrl;
+        img.classList.add('preset-icon');
+        img.addEventListener('click', () => {
+            siteIconInput.value = iconUrl;
+            updateIcon(iconUrl);
+            document.querySelector('.preset-icon.selected')?.classList.remove('selected');
+            img.classList.add('selected');
+        });
+        presetIconsContainer.appendChild(img);
+    });
+}
+
+function updateTitle(newTitle) {
+    document.title = newTitle;
+    localStorage.setItem('siteTitle', newTitle);
+}
+
+function updateIcon(newIconUrl) {
+    document.querySelector('link[rel="shortcut icon"]').href = newIconUrl;
+    localStorage.setItem('siteIcon', newIconUrl);
+}
+
+siteTitleInput.addEventListener('input', (e) => {
+    updateTitle(e.target.value);
+});
+
+siteIconInput.addEventListener('input', (e) => {
+    updateIcon(e.target.value);
+});
+
+resetSettingsBtn.addEventListener('click', () => {
+    localStorage.removeItem('siteTitle');
+    localStorage.removeItem('siteIcon');
+    localStorage.removeItem('panicKey');
+    window.location.reload();
+});
+
+// --- Panic Mode ---
+let panicKey = '\\'; // Default key
+
+function initializePanicMode() {
+    const savedKey = localStorage.getItem('panicKey');
+    if (savedKey) {
+        panicKey = savedKey;
+    }
+    panicKeyInput.value = panicKey;
+}
+
+panicKeyInput.addEventListener('keydown', (e) => {
+    e.preventDefault();
+    panicKey = e.key;
+    panicKeyInput.value = panicKey;
+    localStorage.setItem('panicKey', panicKey);
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === panicKey) {
+        if (panicOverlay.style.display === 'none') {
+            panicOverlay.style.display = 'flex';
+        } else {
+            panicOverlay.style.display = 'none';
+        }
+    }
+});
+
 
 // --- Global State ---
 let games = []; // This will be populated from games.json
@@ -114,6 +214,7 @@ function renderGameGrid(gamesToRender, containerElement) {
 function showHomepage(filter = 'home', genre = null) {
     homepageView.style.display = 'block';
     gameDetailView.style.display = 'none';
+    settingsView.style.display = 'none';
     gameIframe.src = 'about:blank'; // Stop the iframe game if it was loaded
 
     // Hide genre section by default and show default sections
@@ -167,6 +268,7 @@ function showGameDetail(gameId) {
 
     homepageView.style.display = 'none';
     gameDetailView.style.display = 'block';
+    settingsView.style.display = 'none';
 
     document.getElementById('game-title-main').textContent = game.title;
     gameIframe.src = game.iframeSrc; // Set the iframe source
@@ -252,6 +354,13 @@ function showGameDetail(gameId) {
     } else {
         creatorInfo.innerHTML = '<span>Not available</span>';
     }
+}
+
+function showSettingsView() {
+    homepageView.style.display = 'none';
+    gameDetailView.style.display = 'none';
+    settingsView.style.display = 'block';
+    gameIframe.src = 'about:blank'; // Stop any running game
 }
 
 // --- Modal Functions ---
@@ -344,6 +453,8 @@ document.addEventListener('click', (event) => {
     }
 });
 
+settingsBtn.addEventListener('click', showSettingsView);
+
 // --- Modal Event Listeners ---
 
 // Close modal using the 'X' button or overlay click
@@ -422,6 +533,8 @@ document.addEventListener('keydown', (event) => {
 
 // --- Application Initialization ---
 async function initializeApp() {
+    applyAppearanceSettings();
+    initializePanicMode();
     try {
         const response = await fetch('games.json');
         if (!response.ok) {
