@@ -37,7 +37,8 @@ const modalModeButtons = modalOverlay.querySelectorAll('#modal-mode-options .mod
 const modalUnblockButtons = modalOverlay.querySelectorAll('#modal-unblock-options .modal-button');
 const modalGoButton = document.getElementById('modal-go-button');
 
-// --- Modal State ---
+// --- Global State ---
+let games = []; // This will be populated from games.json
 let currentGameModal = null; // Store the game object that opened the modal
 let selectedMode = null;
 let selectedUnblocker = 'none'; // Default to 'none'
@@ -243,6 +244,14 @@ function showGameDetail(gameId) {
     const relatedGrid = document.getElementById('related-grid');
     const relatedGames = games.filter(g => g.genres.some(genre => game.genres.includes(genre)) && g.id !== game.id).slice(0, 5);
     renderGameGrid(relatedGames, relatedGrid);
+
+    // Populate creator info
+    const creatorInfo = gameDetailView.querySelector('#game-creator .creator-info');
+    if (game.creator && game.creatorProfile) {
+        creatorInfo.innerHTML = `<a href="${game.creatorProfile}" target="_blank"><b>${game.creator}</b></a>`;
+    } else {
+        creatorInfo.innerHTML = '<span>Not available</span>';
+    }
 }
 
 // --- Modal Functions ---
@@ -411,22 +420,44 @@ document.addEventListener('keydown', (event) => {
 });
 
 
+// --- Application Initialization ---
+async function initializeApp() {
+    try {
+        const response = await fetch('games.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        games = await response.json();
+
+        // Once games are loaded, proceed with initial page setup
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameId = urlParams.get('game');
+        const genre = urlParams.get('genre');
+
+        if (gameId) {
+            showGameDetail(gameId);
+        } else if (genre) {
+            showHomepage('genre', genre);
+        } else {
+            showHomepage('home');
+        }
+
+        // Set default modal states visually
+        modalGoButton.disabled = true;
+        modalUnblockButtons.forEach(btn => {
+            if (btn.dataset.unblocker === 'none') btn.classList.add('selected');
+        });
+
+    } catch (error) {
+        console.error("Could not load game data:", error);
+        // Optionally, display an error message to the user on the page
+        mainContent.innerHTML = '<p class="error">Sorry, we could not load the games. Please try again later.</p>';
+    }
+}
+
+
 // --- Simplified Initial Load & History ---
-document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const gameId = urlParams.get('game');
-    const genre = urlParams.get('genre');
-
-    if (gameId) showGameDetail(gameId);
-    else if (genre) showHomepage('genre', genre);
-    else showHomepage('home');
-
-    // Set default modal states visually
-    modalGoButton.disabled = true;
-    modalUnblockButtons.forEach(btn => {
-         if (btn.dataset.unblocker === 'none') btn.classList.add('selected');
-    });
-});
+document.addEventListener('DOMContentLoaded', initializeApp);
 
 window.onpopstate = (event) => {
      // Close modal if it's open, otherwise navigate
