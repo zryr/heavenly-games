@@ -35,6 +35,7 @@ const fullscreenBtn = document.getElementById('fullscreen-btn');
 const favoriteBtn = document.getElementById('favorite-btn');
 const shareBtn = document.getElementById('share-btn');
 const settingsBtn = document.getElementById('settings-btn');
+const moviesBtn = document.getElementById('movies-btn');
 const sidebarNavLinks = document.querySelectorAll('.sidebar-nav a');
 const mainContent = document.querySelector('.main-content'); // Added reference for event delegation
 
@@ -44,6 +45,11 @@ const modalCloseBtn = modalOverlay.querySelector('.modal-close-btn');
 const modalModeButtons = modalOverlay.querySelectorAll('#modal-mode-options .modal-button');
 const modalUnblockButtons = modalOverlay.querySelectorAll('#modal-unblock-options .modal-button');
 const modalGoButton = document.getElementById('modal-go-button');
+
+// Redirect Modal Elements
+const redirectModal = document.getElementById('redirect-modal');
+const redirectContinueBtn = document.getElementById('redirect-continue-btn');
+const redirectModalCloseBtn = redirectModal.querySelector('.modal-close-btn');
 
 // --- Settings ---
 const PRESET_ICONS = [
@@ -454,6 +460,28 @@ document.addEventListener('click', (event) => {
 });
 
 settingsBtn.addEventListener('click', showSettingsView);
+
+// --- Redirect Modal Logic ---
+moviesBtn.addEventListener('click', () => {
+    redirectModal.style.display = 'flex';
+});
+
+function closeRedirectModal() {
+    redirectModal.style.display = 'none';
+}
+
+redirectModalCloseBtn.addEventListener('click', closeRedirectModal);
+redirectModal.addEventListener('click', (event) => {
+    if (event.target === redirectModal) {
+        closeRedirectModal();
+    }
+});
+
+redirectContinueBtn.addEventListener('click', () => {
+    window.open('https://rs.gmsgroup.app/', '_blank');
+    closeRedirectModal();
+});
+
 
 // --- Modal Event Listeners ---
 

@@ -22,6 +22,7 @@
             </div>
         </div>
         <div class="header-icons">
+            <button id="movies-btn" class="icon-btn" aria-label="Movies"><i class="fas fa-film"></i></button>
             <button id="settings-btn" class="icon-btn" aria-label="Settings"><i class="fas fa-cog"></i></button>
         </div>
     </header>
@@ -219,6 +220,20 @@
     <div id="panic-overlay" style="display: none;">
         <h1>404 Not Found</h1>
         <p>The requested URL was not found on this server.</p>
+    </div>
+
+    <!-- Redirect Modal -->
+    <div class="modal-overlay" id="redirect-modal" style="display: none;">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="redirect-modal-title">
+            <div class="modal-header">
+                <h2 id="redirect-modal-title">Leaving So Soon?</h2>
+                <button class="modal-close-btn" aria-label="Close popup">×</button>
+            </div>
+            <div class="modal-body">
+                <p>You will be redirected to a different site.</p>
+                <button id="redirect-continue-btn" class="modal-button btn-primary">Continue</button>
+            </div>
+        </div>
     </div>
 </body>
 </html>
