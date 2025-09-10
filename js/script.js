@@ -55,6 +55,18 @@ const redirectModal = document.getElementById('redirect-modal');
 const redirectContinueBtn = document.getElementById('redirect-continue-btn');
 const redirectModalCloseBtn = redirectModal.querySelector('.modal-close-btn');
 
+// Toast Notification
+const toastNotification = document.getElementById('toast-notification');
+
+// Confirm Modal Elements
+const confirmModal = document.getElementById('confirm-modal');
+const confirmModalTitle = document.getElementById('confirm-modal-title');
+const confirmModalText = document.getElementById('confirm-modal-text');
+const confirmModalOkBtn = document.getElementById('confirm-modal-ok-btn');
+const confirmModalCancelBtn = document.getElementById('confirm-modal-cancel-btn');
+const confirmModalCloseBtn = document.getElementById('confirm-modal-close-btn');
+
+
 // --- Settings ---
 const PRESET_ICONS = [
     'images/drive-mad.webp',
@@ -119,8 +131,9 @@ siteIconInput.addEventListener('input', (e) => {
     updateIcon(e.target.value);
 });
 
-resetSettingsBtn.addEventListener('click', () => {
-    if (window.confirm('Are you sure you want to reset all settings? This action cannot be undone.')) {
+resetSettingsBtn.addEventListener('click', async () => {
+    const confirmed = await showConfirm('Reset All Settings', 'Are you sure you want to reset all settings? This action cannot be undone.');
+    if (confirmed) {
         localStorage.removeItem('siteTitle');
         localStorage.removeItem('siteIcon');
         localStorage.removeItem('panicKey');
@@ -265,7 +278,7 @@ function renderGameGrid(gamesToRender, containerElement) {
         gameCard.classList.add('game-card');
         gameCard.dataset.gameId = game.id; // Store game ID for click handling
 
-        const pillsHtml = game.platforms.map(pill => {
+        const pillsHtml = (game.platforms || []).map(pill => {
             let iconClass = '';
             switch (pill.toLowerCase()) {
                 case 'pc only':
@@ -501,7 +514,7 @@ function showGameDetail(gameId) {
 
     // Populate related games
     const relatedGrid = document.getElementById('related-grid');
-    const relatedGames = games.filter(g => g.genres.some(genre => game.genres.includes(genre)) && g.id !== game.id).slice(0, 5);
+    const relatedGames = games.filter(g => (g.genres || []).some(genre => (game.genres || []).includes(genre)) && g.id !== game.id).slice(0, 5);
     renderGameGrid(relatedGames, relatedGrid);
 
     // Populate creator info
@@ -571,6 +584,59 @@ function closeModal() {
          if (elementFocusedBeforeModal) elementFocusedBeforeModal.focus();
      }, { once: true }); // Important: listener removes itself after one run
 }
+
+function showToast(message) {
+    toastNotification.textContent = message;
+    toastNotification.className = "toast show";
+    setTimeout(function(){ toastNotification.className = toastNotification.className.replace("show", ""); }, 3000);
+}
+
+function showConfirm(title, text) {
+    return new Promise(resolve => {
+        confirmModalTitle.textContent = title;
+        confirmModalText.textContent = text;
+
+        confirmModal.style.display = 'flex';
+        confirmModal.classList.add('visible');
+
+        let resolved = false;
+
+        const cleanupAndResolve = (value) => {
+            if (resolved) return;
+            resolved = true;
+
+            confirmModal.classList.remove('visible');
+            confirmModal.classList.add('closing');
+
+            confirmModal.addEventListener('animationend', () => {
+                confirmModal.style.display = 'none';
+                confirmModal.classList.remove('closing');
+
+                // Clean up listeners
+                confirmModalOkBtn.removeEventListener('click', okListener);
+                confirmModalCancelBtn.removeEventListener('click', cancelListener);
+                confirmModalCloseBtn.removeEventListener('click', cancelListener);
+                confirmModal.removeEventListener('click', overlayListener);
+
+                resolve(value);
+            }, { once: true });
+        };
+
+        const okListener = () => cleanupAndResolve(true);
+        const cancelListener = () => cleanupAndResolve(false);
+        const overlayListener = (event) => {
+            if (event.target === confirmModal) {
+                cleanupAndResolve(false);
+            }
+        };
+
+        confirmModalOkBtn.addEventListener('click', okListener);
+        confirmModalCancelBtn.addEventListener('click', cancelListener);
+        confirmModalCloseBtn.addEventListener('click', cancelListener);
+        confirmModal.addEventListener('click', overlayListener);
+    });
+}
+
 
 // --- Event Listeners ---
 
@@ -682,7 +748,7 @@ modalGoButton.addEventListener('click', () => {
     else if (selectedMode === 'fullscreen') targetUrl = currentGameModal.fullscreenUrl;
 
     if (!targetUrl) {
-        alert('Error: Game URL is missing.');
+        showToast('Error: Game URL is missing.');
         return;
     }
 
@@ -723,6 +789,16 @@ document.addEventListener('keydown', (event) => {
 
 // --- Application Initialization ---
 async function initializeApp() {
+    // Restore sidebar state
+    try {
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            sidebar.classList.add('collapsed');
+            body.classList.add('sidebar-is-collapsed');
+        }
+    } catch (e) {
+        console.warn('Could not load sidebar state from localStorage.', e);
+    }
+
     applyAppearanceSettings();
     initializePanicMode();
     try {
@@ -788,6 +864,11 @@ window.onpopstate = (event) => {
 sidebarToggle.addEventListener('click', () => {
     sidebar.classList.toggle('collapsed');
     body.classList.toggle('sidebar-is-collapsed');
+    try {
+        localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+    } catch (e) {
+        console.warn('Could not save sidebar state.', e);
+    }
 });
 document.querySelector('.sidebar-nav').addEventListener('click', (event) => {
     const link = event.target.closest('a');
@@ -822,9 +903,9 @@ favoriteBtn.addEventListener('click', () => {
 shareBtn.addEventListener('click', () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
-        alert('Link copied to clipboard!');
+        showToast('Link copied to clipboard!');
     }, () => {
-        alert('Failed to copy link.');
+        showToast('Failed to copy link.');
     });
 });
 
