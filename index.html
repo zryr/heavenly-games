@@ -5,11 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HEAVEN - Unblocked Games</title>
     <link rel="shortcut icon" href="images/drive-mad.webp" type="image/x-icon">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div id="skeleton-loader">
+        <div class="skeleton-header"></div>
+        <div class="skeleton-main">
+            <div class="skeleton-sidebar"></div>
+            <div class="skeleton-content">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+        </div>
+    </div>
+    <canvas id="stars-canvas"></canvas>
     <header class="site-header">
         <a href="index.html" class="site-name">
             <i class="fas fa-cloud"></i> HEAVEN
@@ -66,6 +85,15 @@
         <main class="main-content">
             <!-- Homepage View (Visible by default or when Home/Category links are clicked) -->
             <section id="homepage-view">
+                <section id="hero-section">
+                    <!-- Hero content will be loaded here by JS -->
+                </section>
+                <section id="recently-played-games" style="display: none;">
+                    <h2>Recently Played</h2>
+                    <div class="game-grid" id="recently-played-grid">
+                        <!-- Recently played games will be loaded here by JS -->
+                    </div>
+                </section>
                 <section id="popular-games">
                     <h2>Popular Games</h2>
                     <div class="game-grid" id="popular-grid">
@@ -135,6 +163,10 @@
                         <h3>Creator</h3>
                         <div class="creator-info"></div>
                      </div>
+                     <div id="game-playtime">
+                        <h3>Time Played</h3>
+                        <div class="playtime-info"></div>
+                    </div>
                  </div>
                  <section id="related-games">
                     <h2>Related Games</h2>
@@ -213,8 +245,8 @@
     </div>
 
 
-    <script src="js/data.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/background.js"></script>
 
     <!-- Panic Mode Overlay -->
     <div id="panic-overlay" style="display: none;">

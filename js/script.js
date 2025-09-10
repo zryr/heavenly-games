@@ -19,6 +19,10 @@ const presetIconsContainer = document.getElementById('preset-icons-container');
 const panicKeyInput = document.getElementById('panic-key-input');
 const resetSettingsBtn = document.getElementById('reset-settings-btn');
 const panicOverlay = document.getElementById('panic-overlay');
+const skeletonLoader = document.getElementById('skeleton-loader');
+const heroSection = document.getElementById('hero-section');
+const recentlyPlayedSection = document.getElementById('recently-played-games');
+const recentlyPlayedGrid = document.getElementById('recently-played-grid');
 const popularGrid = document.getElementById('popular-grid');
 const trendingGrid = document.getElementById('trending-grid');
 const newGrid = document.getElementById('new-grid');
@@ -91,12 +95,20 @@ function applyAppearanceSettings() {
 
 function updateTitle(newTitle) {
     document.title = newTitle;
-    localStorage.setItem('siteTitle', newTitle);
+    try {
+        localStorage.setItem('siteTitle', newTitle);
+    } catch (e) {
+        console.warn('Could not save site title to localStorage.', e);
+    }
 }
 
 function updateIcon(newIconUrl) {
     document.querySelector('link[rel="shortcut icon"]').href = newIconUrl;
-    localStorage.setItem('siteIcon', newIconUrl);
+    try {
+        localStorage.setItem('siteIcon', newIconUrl);
+    } catch (e) {
+        console.warn('Could not save site icon to localStorage.', e);
+    }
 }
 
 siteTitleInput.addEventListener('input', (e) => {
@@ -108,10 +120,12 @@ siteIconInput.addEventListener('input', (e) => {
 });
 
 resetSettingsBtn.addEventListener('click', () => {
-    localStorage.removeItem('siteTitle');
-    localStorage.removeItem('siteIcon');
-    localStorage.removeItem('panicKey');
-    window.location.reload();
+    if (window.confirm('Are you sure you want to reset all settings? This action cannot be undone.')) {
+        localStorage.removeItem('siteTitle');
+        localStorage.removeItem('siteIcon');
+        localStorage.removeItem('panicKey');
+        window.location.reload();
+    }
 });
 
 // --- Panic Mode ---
@@ -125,11 +139,24 @@ function initializePanicMode() {
     panicKeyInput.value = panicKey;
 }
 
+panicKeyInput.addEventListener('click', () => {
+    panicKeyInput.placeholder = 'Press any key...';
+});
+
+panicKeyInput.addEventListener('blur', () => {
+    panicKeyInput.placeholder = 'Click and press a key';
+});
+
 panicKeyInput.addEventListener('keydown', (e) => {
     e.preventDefault();
     panicKey = e.key;
     panicKeyInput.value = panicKey;
-    localStorage.setItem('panicKey', panicKey);
+    panicKeyInput.placeholder = 'Click and press a key';
+    try {
+        localStorage.setItem('panicKey', panicKey);
+    } catch (err) {
+        console.warn('Could not save panic key to localStorage.', err);
+    }
 });
 
 document.addEventListener('keydown', (e) => {
@@ -149,6 +176,59 @@ let currentGameModal = null; // Store the game object that opened the modal
 let selectedMode = null;
 let selectedUnblocker = 'none'; // Default to 'none'
 let elementFocusedBeforeModal; // For accessibility focus restoration
+
+// Playtime Tracking
+let playtimeTracker = null;
+let currentSessionTime = 0;
+let currentGameId = null;
+
+
+// --- User Game Data (Playtime, etc.) ---
+const USER_GAME_DATA_KEY = 'userGameData';
+
+function getUserGameData() {
+    const data = localStorage.getItem(USER_GAME_DATA_KEY);
+    return data ? JSON.parse(data) : {};
+}
+
+function saveUserGameData(data) {
+    try {
+        localStorage.setItem(USER_GAME_DATA_KEY, JSON.stringify(data));
+    } catch (e) {
+        console.warn('Could not save user game data to localStorage.', e);
+    }
+}
+
+function getGameData(gameId) {
+    const allData = getUserGameData();
+    return allData[gameId] || { totalPlaytime: 0, lastPlayed: null };
+}
+
+function formatTime(seconds) {
+    if (isNaN(seconds) || seconds < 0) {
+        return '0s';
+    }
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+
+    return [
+        h > 0 ? `${h}h` : '',
+        m > 0 ? `${m}m` : '',
+        s > 0 ? `${s}s` : ''
+    ].filter(Boolean).join(' ') || '0s';
+}
+
+function updateGameData(gameId, sessionTime) {
+    const allData = getUserGameData();
+    const gameData = allData[gameId] || { totalPlaytime: 0 };
+
+    gameData.totalPlaytime += sessionTime;
+    gameData.lastPlayed = Date.now();
+
+    allData[gameId] = gameData;
+    saveUserGameData(allData);
+}
 
 
 // --- Local Storage for Favorites ---
@@ -217,10 +297,28 @@ function renderGameGrid(gamesToRender, containerElement) {
 // --- Navigation/View Switching ---
 
 // Shows the homepage view and optionally filters/sorts games
+function stopPlaytimeTracker() {
+    if (playtimeTracker) {
+        clearInterval(playtimeTracker);
+        updateGameData(currentGameId, currentSessionTime);
+        playtimeTracker = null;
+        currentSessionTime = 0;
+        currentGameId = null;
+    }
+}
+
+// Shows the homepage view and optionally filters/sorts games
 function showHomepage(filter = 'home', genre = null) {
-    homepageView.style.display = 'block';
+    stopPlaytimeTracker();
+    // Hide all views
     gameDetailView.style.display = 'none';
     settingsView.style.display = 'none';
+    gameDetailView.classList.remove('is-visible');
+    settingsView.classList.remove('is-visible');
+
+    homepageView.style.display = 'block';
+    setTimeout(() => homepageView.classList.add('is-visible'), 10);
+
     gameIframe.src = 'about:blank'; // Stop the iframe game if it was loaded
 
     // Hide genre section by default and show default sections
@@ -245,6 +343,43 @@ function showHomepage(filter = 'home', genre = null) {
          const popularGames = games.sort((a, b) => (b.likes - b.dislikes) - (a.likes - a.dislikes)).slice(0, 10);
          const trendingGames = games.filter(game => game.isTrending);
          const newGames = games.filter(game => game.isNew);
+
+        // Populate Hero Section
+        if (trendingGames.length > 0) {
+            const heroGame = trendingGames[0];
+            heroSection.style.backgroundImage = `url('${heroGame.icon}')`;
+            heroSection.innerHTML = `
+                <div class="hero-content">
+                    <h2 class="hero-title">${heroGame.title}</h2>
+                    <a href="#" class="hero-button" data-game-id="${heroGame.id}">Play Now</a>
+                </div>
+            `;
+            // Add event listener for the hero button
+            heroSection.querySelector('.hero-button').addEventListener('click', (e) => {
+                e.preventDefault();
+                const gameId = e.target.dataset.gameId;
+                const game = games.find(g => g.id === gameId);
+                if (game) {
+                    if (game.launchType === 'modal') openModal(gameId);
+                    else showGameDetail(gameId);
+                }
+            });
+        }
+
+        // Populate Recently Played Section
+        const userGameData = getUserGameData();
+        const playedGameIds = Object.keys(userGameData);
+        if (playedGameIds.length > 0) {
+            const sortedPlayedGames = playedGameIds.sort((a, b) => {
+                return userGameData[b].lastPlayed - userGameData[a].lastPlayed;
+            });
+            const recentlyPlayedGames = sortedPlayedGames.map(gameId => games.find(g => g.id === gameId)).filter(Boolean);
+            renderGameGrid(recentlyPlayedGames, recentlyPlayedGrid);
+            recentlyPlayedSection.style.display = 'block';
+        } else {
+            recentlyPlayedSection.style.display = 'none';
+        }
+
          const favoritedIds = getFavoritedGamesIds();
          const favoritedGames = games.filter(game => favoritedIds.includes(game.id));
          renderGameGrid(popularGames, popularGrid);
@@ -265,6 +400,7 @@ function showHomepage(filter = 'home', genre = null) {
 
 // Shows the game detail view for a specific game ID (for iframe games)
 function showGameDetail(gameId) {
+    stopPlaytimeTracker(); // Stop previous tracker if any
     const game = games.find(g => g.id === gameId);
 
     if (!game || game.launchType === 'modal') { // Ensure it's an iframe game
@@ -273,11 +409,26 @@ function showGameDetail(gameId) {
     }
 
     homepageView.style.display = 'none';
-    gameDetailView.style.display = 'block';
     settingsView.style.display = 'none';
+    homepageView.classList.remove('is-visible');
+    settingsView.classList.remove('is-visible');
+
+    gameDetailView.style.display = 'block';
+    setTimeout(() => gameDetailView.classList.add('is-visible'), 10);
 
     document.getElementById('game-title-main').textContent = game.title;
     gameIframe.src = game.iframeSrc; // Set the iframe source
+
+    // Start Playtime Tracker
+    currentGameId = gameId;
+    playtimeTracker = setInterval(() => {
+        currentSessionTime++;
+        // Save periodically every 15 seconds
+        if (currentSessionTime % 15 === 0) {
+            updateGameData(currentGameId, 15);
+            currentSessionTime = 0; // Reset session time after saving
+        }
+    }, 1000);
     gameDescriptionElement.textContent = game.description || 'No description available.';
 
     // Populate controls (handle optional properties)
@@ -360,12 +511,23 @@ function showGameDetail(gameId) {
     } else {
         creatorInfo.innerHTML = '<span>Not available</span>';
     }
+
+    // Populate playtime
+    const playtimeInfo = gameDetailView.querySelector('#game-playtime .playtime-info');
+    const userGameData = getGameData(gameId);
+    playtimeInfo.textContent = formatTime(userGameData.totalPlaytime);
 }
 
 function showSettingsView() {
+    stopPlaytimeTracker();
     homepageView.style.display = 'none';
     gameDetailView.style.display = 'none';
+    homepageView.classList.remove('is-visible');
+    gameDetailView.classList.remove('is-visible');
+
     settingsView.style.display = 'block';
+    setTimeout(() => settingsView.classList.add('is-visible'), 10);
+
     gameIframe.src = 'about:blank'; // Stop any running game
 }
 
@@ -589,10 +751,21 @@ async function initializeApp() {
             if (btn.dataset.unblocker === 'none') btn.classList.add('selected');
         });
 
+        // Hide skeleton loader
+        skeletonLoader.style.opacity = '0';
+        setTimeout(() => {
+            skeletonLoader.style.display = 'none';
+        }, 500); // Match CSS transition duration
+
     } catch (error) {
         console.error("Could not load game data:", error);
         // Optionally, display an error message to the user on the page
         mainContent.innerHTML = '<p class="error">Sorry, we could not load the games. Please try again later.</p>';
+        // Hide skeleton loader to make error message visible
+        skeletonLoader.style.opacity = '0';
+        setTimeout(() => {
+            skeletonLoader.style.display = 'none';
+        }, 500); // Match CSS transition duration
     }
 }
 
@@ -663,3 +836,5 @@ window.addEventListener('scroll', function() {
         header.classList.remove('scrolled');
     }
 });
+
+window.addEventListener('beforeunload', stopPlaytimeTracker);
