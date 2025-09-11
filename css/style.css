@@ -12,7 +12,7 @@
     --button-hover-color: #4a4a4a;
     --button-selected-color: rgba(0, 255, 255, 0.3); /* Cyan light up */
     --button-border-color: #555;
-    --animation-duration: 0.25s;
+    --animation-duration: 0.3s;
 }
 
 body {
@@ -40,6 +40,7 @@ body {
     box-sizing: border-box;
     z-index: 1000; /* Stay on top */
     justify-content: space-between;
+    gap: 15px;
 }
 
 .site-header.scrolled {
@@ -60,7 +61,8 @@ body {
 
 .search-container {
     position: relative;
-    margin: 0 auto;
+    flex-grow: 1; /* Allow search to take up available space */
+    max-width: 500px; /* But not too much space */
 }
 
 .search-icon {
@@ -79,12 +81,26 @@ body {
     background-color: #333;
     color: var(--text-color);
     transition: all 0.3s ease;
+    box-sizing: border-box; /* Ensure padding is included in width */
 }
 
 #search-input:focus {
     outline: none;
     border-color: var(--accent-cyan);
     box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-cyan);
 }
 
 .search-results-dropdown {
@@ -127,21 +143,8 @@ body {
  }
 
 #filter-btn {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #ccc;
-    background: none;
-    border: none;
-    font-size: 1.2em;
-    cursor: pointer;
-    padding: 5px;
-    transition: color 0.2s ease;
-}
-
-#filter-btn:hover {
-    color: var(--accent-cyan);
+    /* The .icon-btn class now handles all styling */
+    /* No specific styles needed here anymore */
 }
 
 .layout-container {
@@ -409,21 +412,7 @@ body {
 }
 
 #fullscreen-btn {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    z-index: 10; /* Above iframe */
-    background-color: rgba(0, 0, 0, 0.5);
-    color: var(--accent-cyan);
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1em;
-}
-
-#fullscreen-btn:hover {
-    background-color: rgba(0, 0, 0, 0.7);
+    /* Now in header, styled by .icon-btn */
 }
 
 #game-info h2 {

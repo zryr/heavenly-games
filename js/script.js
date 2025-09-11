@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmModalOkBtn = document.getElementById('confirm-modal-ok-btn');
     const confirmModalCancelBtn = document.getElementById('confirm-modal-cancel-btn');
     const confirmModalCloseBtn = document.getElementById('confirm-modal-close-btn');
+    const cloakSiteCheckbox = document.getElementById('cloak-site-checkbox');
 
 
     // --- Settings ---
@@ -362,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsView.style.display = 'none';
         gameDetailView.classList.remove('is-visible');
         settingsView.classList.remove('is-visible');
+        fullscreenBtn.style.display = 'none'; // Hide fullscreen button
 
         homepageView.style.display = 'block';
         setTimeout(() => homepageView.classList.add('is-visible'), 10);
@@ -474,6 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsView.style.display = 'none';
         homepageView.classList.remove('is-visible');
         settingsView.classList.remove('is-visible');
+        fullscreenBtn.style.display = 'flex'; // Show fullscreen button
 
         gameDetailView.style.display = 'block';
         setTimeout(() => gameDetailView.classList.add('is-visible'), 10);
@@ -647,11 +650,45 @@ document.addEventListener('DOMContentLoaded', () => {
         gameDetailView.style.display = 'none';
         homepageView.classList.remove('is-visible');
         gameDetailView.classList.remove('is-visible');
+        fullscreenBtn.style.display = 'none'; // Hide fullscreen button
 
         settingsView.style.display = 'block';
         setTimeout(() => settingsView.classList.add('is-visible'), 10);
 
         gameIframe.src = 'about:blank'; // Stop any running game
+    }
+
+    // --- Generic Modal Functions ---
+    function showAnimatedModal(modal) {
+        if (!modal) return;
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('visible'), 10); // Timeout ensures transition applies
+    }
+
+    function hideAnimatedModal(modal) {
+        if (!modal) return;
+        modal.classList.add('closing');
+        modal.addEventListener('animationend', () => {
+            modal.classList.remove('visible', 'closing');
+            modal.style.display = 'none';
+        }, { once: true });
+    }
+
+
+    function openInAboutBlank(url) {
+        const newWindow = window.open('about:blank', '_blank');
+        if (newWindow) {
+            newWindow.document.write(`
+                <style>
+                    body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000; }
+                    iframe { border: none; width: 100%; height: 100%; }
+                </style>
+                <iframe src="${url}"></iframe>
+            `);
+            newWindow.document.close();
+        } else {
+            showToast('Popup blocked! Please allow popups.');
+        }
     }
 
     // --- Modal Functions ---
@@ -810,23 +847,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Redirect Modal Logic ---
     moviesBtn.addEventListener('click', () => {
-        redirectModal.style.display = 'flex';
+        showAnimatedModal(redirectModal);
     });
 
-    function closeRedirectModal() {
-        redirectModal.style.display = 'none';
-    }
-
-    redirectModalCloseBtn.addEventListener('click', closeRedirectModal);
     redirectModal.addEventListener('click', (event) => {
-        if (event.target === redirectModal) {
-            closeRedirectModal();
+        if (event.target === redirectModal || event.target.closest('.modal-close-btn')) {
+            hideAnimatedModal(redirectModal);
         }
     });
 
     redirectContinueBtn.addEventListener('click', () => {
         window.open('https://rs.gmsgroup.app/', '_blank');
-        closeRedirectModal();
+        hideAnimatedModal(redirectModal);
     });
 
 
@@ -875,7 +907,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (selectedUnblocker === 'proxy1') finalUrl = PROXY_URL_1 + targetUrl;
                 else if (selectedUnblocker === 'proxy2') finalUrl = PROXY_URL_2 + targetUrl;
 
-        window.open(finalUrl, '_blank');
+        if (localStorage.getItem('cloakSite') === 'true') {
+            openInAboutBlank(finalUrl);
+        } else {
+            window.open(finalUrl, '_blank');
+        }
         closeModal();
     });
 
@@ -920,6 +956,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         applyAppearanceSettings();
         initializePanicMode();
+
+        // Restore and handle cloak setting
+        const cloakEnabled = localStorage.getItem('cloakSite') === 'true';
+        cloakSiteCheckbox.checked = cloakEnabled;
+        cloakSiteCheckbox.addEventListener('change', () => {
+            localStorage.setItem('cloakSite', cloakSiteCheckbox.checked);
+            showToast(`About:blank cloaking ${cloakSiteCheckbox.checked ? 'enabled' : 'disabled'}.`);
+        });
+
         try {
             const response = await fetch('games.json');
             if (!response.ok) {
@@ -1047,7 +1092,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Filter Logic ---
     const filterBtn = document.getElementById('filter-btn');
     const filterModal = document.getElementById('filter-modal');
-    const filterModalCloseBtn = filterModal.querySelector('.modal-close-btn');
     const applyFiltersBtn = document.getElementById('apply-filters-btn');
 
     let activeFilters = {
@@ -1055,19 +1099,19 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     filterBtn.addEventListener('click', () => {
-        filterModal.style.display = 'flex';
+        showAnimatedModal(filterModal);
     });
 
     filterModal.addEventListener('click', (event) => {
         if (event.target === filterModal || event.target.closest('.modal-close-btn')) {
-            filterModal.style.display = 'none';
+            hideAnimatedModal(filterModal);
         }
     });
 
     applyFiltersBtn.addEventListener('click', () => {
         const platformCheckboxes = filterModal.querySelectorAll('input[name="platform"]:checked');
         activeFilters.platforms = Array.from(platformCheckboxes).map(cb => cb.value);
-        filterModal.style.display = 'none';
+        hideAnimatedModal(filterModal);
         showHomepage('home'); // Re-render the homepage with the new filters
     });
 });

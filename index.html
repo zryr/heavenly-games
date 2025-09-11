@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEAVEN - Unblocked Games</title>
+    <title>Heaven</title>
     <link rel="shortcut icon" href="images/drive-mad.webp" type="image/x-icon">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,12 +43,13 @@
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
             <input type="text" id="search-input" placeholder="Search games...">
-            <button id="filter-btn" class="icon-btn" aria-label="Filter Games"><i class="fas fa-filter"></i></button>
             <div id="search-results" class="search-results-dropdown">
                 <!-- Search results will be dynamically added here by JS -->
             </div>
         </div>
+        <button id="filter-btn" class="icon-btn" aria-label="Filter Games"><i class="fas fa-filter"></i></button>
         <div class="header-icons">
+            <button id="fullscreen-btn" class="icon-btn" aria-label="Fullscreen" style="display: none;"><i class="fas fa-expand"></i></button>
             <button id="movies-btn" class="icon-btn" aria-label="Movies"><i class="fas fa-film"></i></button>
             <button id="settings-btn" class="icon-btn" aria-label="Settings"><i class="fas fa-cog"></i></button>
         </div>
@@ -142,7 +143,6 @@
                 <div class="game-action-bar">
                     <h1 id="game-title-main" class="game-title-main"></h1>
                     <div class="game-page-icons">
-                        <button id="fullscreen-btn" class="icon-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i></button>
                         <button id="favorite-btn" class="icon-btn"><i class="fas fa-star"></i></button>
                         <button id="share-btn" class="icon-btn"><i class="fas fa-share-alt"></i></button>
                     </div>
@@ -214,6 +214,16 @@
                         <div class="preset-icons" id="preset-icons-container">
                             <!-- Presets will be loaded here by JS -->
                         </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3><i class="fas fa-user-secret"></i> Stealth</h3>
+                    <div class="setting-item">
+                        <label for="cloak-site-checkbox" class="checkbox-label">
+                            <input type="checkbox" id="cloak-site-checkbox">
+                            <span>Cloak Games in about:blank</span>
+                        </label>
                     </div>
                 </div>
 
