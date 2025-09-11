@@ -969,13 +969,9 @@ body {
         width: var(--sidebar-width-collapsed);
         padding: 20px 10px;
     }
-     .sidebar.collapsed {
-        width: 0; /* Hide completely or make very small */
-        overflow: hidden;
+    .sidebar.collapsed {
+        /* Let the global style handle the collapsed width */
      }
-    .sidebar-nav a .link-text {
-        display: none;
-    }
     .sidebar-nav a i {
          margin-right: 0;
     }
@@ -984,8 +980,8 @@ body {
          width: calc(100% - var(--sidebar-width-collapsed));
     }
     body.sidebar-is-collapsed .main-content {
-         margin-left: 0; /* No margin when sidebar is hidden */
-         width: 100%;
+        margin-left: var(--sidebar-width-collapsed);
+         width: calc(100% - var(--sidebar-width-collapsed));
     }
 }
 

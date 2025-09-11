@@ -49,7 +49,6 @@
         </div>
         <button id="filter-btn" class="icon-btn" aria-label="Filter Games"><i class="fas fa-filter"></i></button>
         <div class="header-icons">
-            <button id="fullscreen-btn" class="icon-btn" aria-label="Fullscreen" style="display: none;"><i class="fas fa-expand"></i></button>
             <button id="movies-btn" class="icon-btn" aria-label="Movies"><i class="fas fa-film"></i></button>
             <button id="settings-btn" class="icon-btn" aria-label="Settings"><i class="fas fa-cog"></i></button>
         </div>
@@ -66,7 +65,7 @@
                 </ul>
                 <div class="sidebar-divider"></div>
                 <ul class="suggestion-list">
-                    <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSdZsNur_FfxHVvnPx6nHkd06ww5Mq3EoF6Xax-aTCaUAMoZkw/viewform?usp=header" target="_blank"><i class="fas fa-lightbulb"></i> <span class="link-text">Suggest New Games</span></a></li>
+                    <li><a href="#" id="suggest-game-btn"><i class="fas fa-lightbulb"></i> <span class="link-text">Suggest New Games</span></a></li>
                 </ul>
                 <div class="sidebar-divider"></div>
                 <ul class="genre-list">
@@ -143,6 +142,7 @@
                 <div class="game-action-bar">
                     <h1 id="game-title-main" class="game-title-main"></h1>
                     <div class="game-page-icons">
+                        <button id="fullscreen-btn" class="icon-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i></button>
                         <button id="favorite-btn" class="icon-btn"><i class="fas fa-star"></i></button>
                         <button id="share-btn" class="icon-btn"><i class="fas fa-share-alt"></i></button>
                     </div>
@@ -233,6 +233,9 @@
                         <label for="panic-key-input">Panic Key</label>
                         <input type="text" id="panic-key-input" readonly placeholder="Click and press a key">
                     </div>
+                    <div class="setting-item">
+                        <button id="panic-btn" class="modal-button">Panic Button</button>
+                    </div>
                 </div>
 
                 <div class="settings-section">
@@ -313,6 +316,19 @@
                     <button id="confirm-modal-cancel-btn" class="modal-button">Cancel</button>
                     <button id="confirm-modal-ok-btn" class="modal-button btn-danger">OK</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Suggestion Modal -->
+    <div class="modal-overlay" id="suggestion-modal" style="display: none;">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="suggestion-modal-title">
+            <div class="modal-header">
+                <h2 id="suggestion-modal-title">Suggest a Game</h2>
+                <button class="modal-close-btn" aria-label="Close popup">×</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="suggestion-iframe" style="width: 100%; height: 60vh; border: none;" src="https://docs.google.com/forms/d/e/1FAIpQLSdZsNur_FfxHVvnPx6nHkd06ww5Mq3EoF6Xax-aTCaUAMoZkw/viewform?embedded=true">Loading...</iframe>
             </div>
         </div>
     </div>

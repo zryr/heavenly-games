@@ -55,6 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const redirectContinueBtn = document.getElementById('redirect-continue-btn');
     const redirectModalCloseBtn = redirectModal.querySelector('.modal-close-btn');
 
+    // Suggestion Modal Elements
+    const suggestionModal = document.getElementById('suggestion-modal');
+    const suggestGameBtn = document.getElementById('suggest-game-btn');
+
     // Toast Notification
     const toastNotification = document.getElementById('toast-notification');
 
@@ -66,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmModalCancelBtn = document.getElementById('confirm-modal-cancel-btn');
     const confirmModalCloseBtn = document.getElementById('confirm-modal-close-btn');
     const cloakSiteCheckbox = document.getElementById('cloak-site-checkbox');
+    const panicBtn = document.getElementById('panic-btn');
 
 
     // --- Settings ---
@@ -181,6 +186,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 panicOverlay.style.display = 'none';
             }
         }
+    });
+
+    panicBtn.addEventListener('click', () => {
+        window.location.href = 'about:blank';
     });
 
 
@@ -859,6 +868,18 @@ document.addEventListener('DOMContentLoaded', () => {
     redirectContinueBtn.addEventListener('click', () => {
         window.open('https://rs.gmsgroup.app/', '_blank');
         hideAnimatedModal(redirectModal);
+    });
+
+    // --- Suggestion Modal Logic ---
+    suggestGameBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showAnimatedModal(suggestionModal);
+    });
+
+    suggestionModal.addEventListener('click', (event) => {
+        if (event.target === suggestionModal || event.target.closest('.modal-close-btn')) {
+            hideAnimatedModal(suggestionModal);
+        }
     });
 
 
