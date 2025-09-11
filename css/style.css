@@ -159,9 +159,7 @@ body {
     font-size: 1.5em;
     cursor: pointer;
     display: block;
-    margin-bottom: 20px;
-    width: 100%; /* Make button full width */
-    text-align: center; /* Center icon */
+    margin-right: 20px; /* Add some space */
 }
 
 .sidebar-nav ul {
@@ -459,6 +457,37 @@ body {
 .game-page-icons {
     display: flex;
     gap: 10px; /* Adds space between the icons */
+}
+
+.game-meta-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: #ccc;
+    margin: 0 auto; /* Center it between title and icons */
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #252528;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.meta-item i {
+    color: var(--accent-cyan);
+}
+
+#game-creator a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#game-creator a:hover {
+    text-decoration: underline;
 }
 
 /* Styling for the icon buttons */

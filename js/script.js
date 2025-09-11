@@ -518,17 +518,17 @@ document.addEventListener('DOMContentLoaded', () => {
         renderGameGrid(relatedGames, relatedGrid);
 
         // Populate creator info
-        const creatorInfo = gameDetailView.querySelector('#game-creator .creator-info');
+    const creatorSpan = document.getElementById('game-creator');
         if (game.creator && game.creatorProfile) {
-            creatorInfo.innerHTML = `<a href="${game.creatorProfile}" target="_blank"><b>${game.creator}</b></a>`;
+        creatorSpan.innerHTML = `<a href="${game.creatorProfile}" target="_blank"><b>${game.creator}</b></a>`;
         } else {
-            creatorInfo.innerHTML = '<span>Not available</span>';
+        creatorSpan.textContent = 'Not available';
         }
 
         // Populate playtime
-        const playtimeInfo = gameDetailView.querySelector('#game-playtime .playtime-info');
+    const playtimeSpan = document.getElementById('game-playtime');
         const userGameData = getGameData(gameId);
-        playtimeInfo.textContent = formatTime(userGameData.totalPlaytime);
+    playtimeSpan.textContent = formatTime(userGameData.totalPlaytime);
     }
 
     function showSettingsView() {

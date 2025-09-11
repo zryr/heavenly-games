@@ -30,6 +30,9 @@
     </div>
     <canvas id="stars-canvas"></canvas>
     <header class="site-header">
+        <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
         <a href="index.html" class="site-name">
             <i class="fas fa-cloud"></i> HEAVEN
         </a>
@@ -48,9 +51,6 @@
 
     <div class="layout-container">
         <aside class="sidebar">
-            <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Toggle Sidebar">
-                <i class="fas fa-bars"></i>
-            </button>
             <nav class="sidebar-nav">
                 <ul>
                     <li><a href="#" data-section="home"><i class="fas fa-home"></i> <span class="link-text">Home</span></a></li>
@@ -136,7 +136,18 @@
             <section id="game-detail-view" style="display: none;">
                 <div class="game-action-bar">
                     <h1 id="game-title-main" class="game-title-main"></h1>
+                    <div class="game-meta-info">
+                        <div id="game-creator-container" class="meta-item">
+                            <i class="fas fa-user"></i>
+                            <span id="game-creator"></span>
+                        </div>
+                        <div id="game-playtime-container" class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="game-playtime"></span>
+                        </div>
+                    </div>
                     <div class="game-page-icons">
+                        <button id="fullscreen-btn" class="icon-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i></button>
                         <button id="favorite-btn" class="icon-btn"><i class="fas fa-star"></i></button>
                         <button id="share-btn" class="icon-btn"><i class="fas fa-share-alt"></i></button>
                     </div>
@@ -144,7 +155,6 @@
                  <div id="game-iframe-container">
                      <!-- Note: The iframe is loaded dynamically by JS -->
                      <iframe id="splash-game-content" frameborder="0" allow="autoplay; fullscreen; gamepad; ambient-light-sensor; encrypted-media" allowfullscreen="" seamless="" scrolling="no" src=""></iframe>
-                      <button id="fullscreen-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i> Fullscreen</button>
                  </div>
                  <div id="game-info">
                      <div id="game-description">
@@ -159,14 +169,6 @@
                         <h3>Tags</h3>
                         <div class="tags-list"></div>
                      </div>
-                     <div id="game-creator">
-                        <h3>Creator</h3>
-                        <div class="creator-info"></div>
-                     </div>
-                     <div id="game-playtime">
-                        <h3>Time Played</h3>
-                        <div class="playtime-info"></div>
-                    </div>
                  </div>
                  <section id="related-games">
                     <h2>Related Games</h2>
@@ -258,7 +260,7 @@
     <div class="modal-overlay" id="redirect-modal" style="display: none;">
         <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="redirect-modal-title">
             <div class="modal-header">
-                <h2 id="redirect-modal-title">Leaving So Soon?</h2>
+                <h2 id="redirect-modal-title">Movies | Reds Exploit Corner</h2>
                 <button class="modal-close-btn" aria-label="Close popup">×</button>
             </div>
             <div class="modal-body">
