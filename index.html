@@ -31,7 +31,11 @@
     <canvas id="stars-canvas"></canvas>
     <header class="site-header">
         <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Toggle Sidebar">
-            <i class="fas fa-bars"></i>
+            <div class="hamburger-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </button>
         <a href="index.html" class="site-name">
             <i class="fas fa-cloud"></i> HEAVEN
@@ -39,6 +43,7 @@
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
             <input type="text" id="search-input" placeholder="Search games...">
+            <button id="filter-btn" class="icon-btn" aria-label="Filter Games"><i class="fas fa-filter"></i></button>
             <div id="search-results" class="search-results-dropdown">
                 <!-- Search results will be dynamically added here by JS -->
             </div>
@@ -136,16 +141,6 @@
             <section id="game-detail-view" style="display: none;">
                 <div class="game-action-bar">
                     <h1 id="game-title-main" class="game-title-main"></h1>
-                    <div class="game-meta-info">
-                        <div id="game-creator-container" class="meta-item">
-                            <i class="fas fa-user"></i>
-                            <span id="game-creator"></span>
-                        </div>
-                        <div id="game-playtime-container" class="meta-item">
-                            <i class="fas fa-clock"></i>
-                            <span id="game-playtime"></span>
-                        </div>
-                    </div>
                     <div class="game-page-icons">
                         <button id="fullscreen-btn" class="icon-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i></button>
                         <button id="favorite-btn" class="icon-btn"><i class="fas fa-star"></i></button>
@@ -155,6 +150,28 @@
                  <div id="game-iframe-container">
                      <!-- Note: The iframe is loaded dynamically by JS -->
                      <iframe id="splash-game-content" frameborder="0" allow="autoplay; fullscreen; gamepad; ambient-light-sensor; encrypted-media" allowfullscreen="" seamless="" scrolling="no" src=""></iframe>
+                 </div>
+                 <div class="game-metadata-bar">
+                     <div class="view-count meta-item">
+                         <i class="fas fa-eye"></i>
+                         <span id="view-count-number">0</span>
+                     </div>
+                     <div class="meta-item">
+                         <i class="fas fa-user"></i>
+                         <span id="game-creator"></span>
+                     </div>
+                     <div class="meta-item">
+                         <i class="fas fa-clock"></i>
+                         <span id="game-playtime"></span>
+                     </div>
+                     <div class="rating-container">
+                         <button id="like-btn" class="rating-btn"><i class="fas fa-thumbs-up"></i></button>
+                         <div class="rating-bar">
+                             <div id="like-bar" class="like-bar"></div>
+                         </div>
+                         <button id="dislike-btn" class="rating-btn"><i class="fas fa-thumbs-down"></i></button>
+                         <span id="like-percentage">0%</span>
+                     </div>
                  </div>
                  <div id="game-info">
                      <div id="game-description">
@@ -286,6 +303,25 @@
                     <button id="confirm-modal-cancel-btn" class="modal-button">Cancel</button>
                     <button id="confirm-modal-ok-btn" class="modal-button btn-danger">OK</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div id="filter-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Filter Games</h2>
+                <button class="modal-close-btn" aria-label="Close popup">×</button>
+            </div>
+            <div class="modal-body">
+                <h3>Device Compatibility</h3>
+                <div class="filter-group">
+                    <label><input type="checkbox" name="platform" value="PC Only"> PC Only</label>
+                    <label><input type="checkbox" name="platform" value="Keyboard Needed"> Keyboard Needed</label>
+                    <label><input type="checkbox" name="platform" value="Mobile Supported"> Mobile Supported</label>
+                </div>
+                <button id="apply-filters-btn" class="modal-button">Apply Filters</button>
             </div>
         </div>
     </div>

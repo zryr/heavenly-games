@@ -198,6 +198,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- User Game Data (Playtime, etc.) ---
     const USER_GAME_DATA_KEY = 'userGameData';
+    const USER_VOTE_DATA_KEY = 'userVoteData';
+    const GAME_VIEW_DATA_KEY = 'gameViewData';
+
+    function getUserVoteData() {
+        const data = localStorage.getItem(USER_VOTE_DATA_KEY);
+        return data ? JSON.parse(data) : {};
+    }
+
+    function saveUserVoteData(data) {
+        try {
+            localStorage.setItem(USER_VOTE_DATA_KEY, JSON.stringify(data));
+        } catch (e) {
+            console.warn('Could not save user vote data to localStorage.', e);
+        }
+    }
+
+    function getGameViewData() {
+        const data = localStorage.getItem(GAME_VIEW_DATA_KEY);
+        return data ? JSON.parse(data) : {};
+    }
+
+    function saveGameViewData(data) {
+        try {
+            localStorage.setItem(GAME_VIEW_DATA_KEY, JSON.stringify(data));
+        } catch (e) {
+            console.warn('Could not save game view data to localStorage.', e);
+        }
+    }
+
+    function incrementViewCount(gameId) {
+        const allData = getGameViewData();
+        allData[gameId] = (allData[gameId] || 0) + 1;
+        saveGameViewData(allData);
+    }
 
     function getUserGameData() {
         const data = localStorage.getItem(USER_GAME_DATA_KEY);
@@ -334,6 +368,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         gameIframe.src = 'about:blank'; // Stop the iframe game if it was loaded
 
+        let filteredGames = [...games];
+
+        // Apply platform filters
+        if (activeFilters.platforms.length > 0) {
+            filteredGames = filteredGames.filter(game =>
+                game.platforms && activeFilters.platforms.every(platform => game.platforms.includes(platform))
+            );
+        }
+
         // Hide genre section by default and show default sections
         genreGamesSection.style.display = 'none';
         document.getElementById('trending-games').style.display = 'block';
@@ -343,19 +386,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (genre) {
             // Show specific genre section
-            const gamesToDisplay = games.filter(game => game.genres && game.genres.includes(genre)); // Check if genres exists
+            const gamesToDisplay = filteredGames.filter(game => game.genres && game.genres.includes(genre)); // Check if genres exists
             genreTitleElement.textContent = `${genre} Games`;
             renderGameGrid(gamesToDisplay, genreGrid);
             genreGamesSection.style.display = 'block';
             document.getElementById('trending-games').style.display = 'none';
             document.getElementById('new-games').style.display = 'none';
             document.getElementById('favorited-games').style.display = 'none';
+        document.getElementById('popular-games').style.display = 'none';
+        document.getElementById('recently-played-games').style.display = 'none';
+        document.getElementById('hero-section').style.display = 'none';
 
         } else {
+        document.getElementById('popular-games').style.display = 'block';
+        document.getElementById('hero-section').style.display = 'block';
              // Render all default sections
-             const popularGames = games.sort((a, b) => ((b.likes || 0) - (b.dislikes || 0)) - ((a.likes || 0) - (a.dislikes || 0))).slice(0, 10);
-             const trendingGames = games.filter(game => game.isTrending);
-             const newGames = games.filter(game => game.isNew);
+             const popularGames = [...filteredGames].sort((a, b) => ((b.likes || 0) - (b.dislikes || 0)) - ((a.likes || 0) - (a.dislikes || 0))).slice(0, 10);
+             const trendingGames = [...filteredGames].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 10);
+             const newGames = filteredGames.filter(game => game.isNew);
 
             // Populate Hero Section
             if (trendingGames.length > 0) {
@@ -386,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const sortedPlayedGames = playedGameIds.sort((a, b) => {
                     return userGameData[b].lastPlayed - userGameData[a].lastPlayed;
                 });
-                const recentlyPlayedGames = sortedPlayedGames.map(gameId => games.find(g => g.id === gameId)).filter(Boolean);
+                const recentlyPlayedGames = sortedPlayedGames.map(gameId => filteredGames.find(g => g.id === gameId)).filter(Boolean);
                 renderGameGrid(recentlyPlayedGames, recentlyPlayedGrid);
                 recentlyPlayedSection.style.display = 'block';
             } else {
@@ -394,15 +442,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
              const favoritedIds = getFavoritedGamesIds();
-             const favoritedGames = games.filter(game => favoritedIds.includes(game.id));
+             const favoritedGames = filteredGames.filter(game => favoritedIds.includes(game.id));
              renderGameGrid(popularGames, popularGrid);
              renderGameGrid(trendingGames, trendingGrid);
              renderGameGrid(newGames, newGrid);
              renderGameGrid(favoritedGames, favoritedGrid);
              // Handle random game navigation directly
-             if (filter === 'random' && games.length > 0) {
-                 const randomIndex = Math.floor(Math.random() * games.length);
-                 const randomGame = games[randomIndex];
+             if (filter === 'random' && filteredGames.length > 0) {
+                 const randomIndex = Math.floor(Math.random() * filteredGames.length);
+                 const randomGame = filteredGames[randomIndex];
                  showGameDetail(randomGame.id);
                  return;
              }
@@ -413,6 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Shows the game detail view for a specific game ID (for iframe games)
     function showGameDetail(gameId) {
+        incrementViewCount(gameId);
         stopPlaytimeTracker(); // Stop previous tracker if any
         const game = games.find(g => g.id === gameId);
 
@@ -529,6 +578,67 @@ document.addEventListener('DOMContentLoaded', () => {
     const playtimeSpan = document.getElementById('game-playtime');
         const userGameData = getGameData(gameId);
     playtimeSpan.textContent = formatTime(userGameData.totalPlaytime);
+
+    // --- Metadata Bar Logic ---
+    const viewCountSpan = document.getElementById('view-count-number');
+    const likeBtn = document.getElementById('like-btn');
+    const dislikeBtn = document.getElementById('dislike-btn');
+    const likeBar = document.getElementById('like-bar');
+    const likePercentageSpan = document.getElementById('like-percentage');
+
+    // Populate view count
+    const allViewData = getGameViewData();
+    viewCountSpan.textContent = (allViewData[gameId] || 0).toLocaleString();
+
+    // Populate and handle ratings
+    let allVoteData = getUserVoteData();
+    let userVote = allVoteData[gameId]; // 'like', 'dislike', or undefined
+
+    const updateRatingDisplay = () => {
+        const likes = game.likes || 0;
+        const dislikes = game.dislikes || 0;
+        const totalVotes = likes + dislikes;
+        const percentage = totalVotes === 0 ? 0 : Math.round((likes / totalVotes) * 100);
+
+        likeBar.style.width = `${percentage}%`;
+        likePercentageSpan.textContent = `${percentage}%`;
+
+        likeBtn.classList.remove('voted');
+        dislikeBtn.classList.remove('voted');
+        if (userVote === 'like') {
+            likeBtn.classList.add('voted');
+        } else if (userVote === 'dislike') {
+            dislikeBtn.classList.add('voted');
+        }
+    };
+
+    updateRatingDisplay();
+
+    likeBtn.onclick = () => {
+        if (userVote === 'like') return;
+
+        if (userVote === 'dislike') {
+            game.dislikes--;
+        }
+        game.likes++;
+        userVote = 'like';
+        allVoteData[gameId] = 'like';
+        saveUserVoteData(allVoteData);
+        updateRatingDisplay();
+    };
+
+    dislikeBtn.onclick = () => {
+        if (userVote === 'dislike') return;
+
+        if (userVote === 'like') {
+            game.likes--;
+        }
+        game.dislikes++;
+        userVote = 'dislike';
+        allVoteData[gameId] = 'dislike';
+        saveUserVoteData(allVoteData);
+        updateRatingDisplay();
+    };
     }
 
     function showSettingsView() {
@@ -588,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showToast(message) {
         toastNotification.textContent = message;
         toastNotification.className = "toast show";
-        setTimeout(function(){ toastNotification.className = toastNotification.className.replace("show", ""); }, 3000);
+    setTimeout(function(){ toastNotification.className = toastNotification.className.replace("show", ""); }, 5000);
     }
 
     function showConfirm(title, text) {
@@ -661,9 +771,18 @@ document.addEventListener('DOMContentLoaded', () => {
             searchResultsContainer.classList.remove('visible');
             return;
         }
-        const filteredGames = games.filter(game => game.title.toLowerCase().includes(query));
-        if (filteredGames.length > 0) {
-             filteredGames.forEach(game => {
+        let filteredGames = [...games];
+
+        // Apply platform filters
+        if (activeFilters.platforms.length > 0) {
+            filteredGames = filteredGames.filter(game =>
+                game.platforms && activeFilters.platforms.every(platform => game.platforms.includes(platform))
+            );
+        }
+        const searchResults = filteredGames.filter(game => game.title.toLowerCase().includes(query));
+
+        if (searchResults.length > 0) {
+             searchResults.forEach(game => {
                 const resultItem = document.createElement('div');
                 resultItem.innerHTML = `<img src="${game.icon}" alt=""> <span>${game.title}</span>`;
                 resultItem.addEventListener('click', () => {
@@ -866,6 +985,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Sidebar Toggle & Other minor listeners ---
     sidebarToggle.addEventListener('click', () => {
+        sidebarToggle.classList.toggle('toggled');
         sidebar.classList.toggle('collapsed');
         body.classList.toggle('sidebar-is-collapsed');
         try {
@@ -923,4 +1043,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.addEventListener('beforeunload', stopPlaytimeTracker);
+
+    // --- Filter Logic ---
+    const filterBtn = document.getElementById('filter-btn');
+    const filterModal = document.getElementById('filter-modal');
+    const filterModalCloseBtn = filterModal.querySelector('.modal-close-btn');
+    const applyFiltersBtn = document.getElementById('apply-filters-btn');
+
+    let activeFilters = {
+        platforms: []
+    };
+
+    filterBtn.addEventListener('click', () => {
+        filterModal.style.display = 'flex';
+    });
+
+    filterModal.addEventListener('click', (event) => {
+        if (event.target === filterModal || event.target.closest('.modal-close-btn')) {
+            filterModal.style.display = 'none';
+        }
+    });
+
+    applyFiltersBtn.addEventListener('click', () => {
+        const platformCheckboxes = filterModal.querySelectorAll('input[name="platform"]:checked');
+        activeFilters.platforms = Array.from(platformCheckboxes).map(cb => cb.value);
+        filterModal.style.display = 'none';
+        showHomepage('home'); // Re-render the homepage with the new filters
+    });
 });

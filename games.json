@@ -17,7 +17,10 @@
     "isFavorited": false,
     "launchType": "iframe",
     "creator": "Placeholder Creator",
-    "creatorProfile": "#"
+    "creatorProfile": "#",
+    "likes": 0,
+    "dislikes": 0,
+    "views": 0
   },
   {
     "id": "driven-wild",
@@ -47,6 +50,9 @@
     "normalUrl": "https://www.newgrounds.com/portal/view/972740",
     "fullscreenUrl": "https://uploads.ungrounded.net/alternate/6510000/6510853_alternate_303470_r35.zip/",
     "creator": "Placeholder Creator 2",
-    "creatorProfile": "#"
+    "creatorProfile": "#",
+    "likes": 0,
+    "dislikes": 0,
+    "views": 0
   }
 ]
