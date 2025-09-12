@@ -55,6 +55,7 @@
     </header>
 
     <div class="layout-container">
+        <div id="sidebar-overlay" style="display: none;"></div>
         <aside class="sidebar">
             <nav class="sidebar-nav">
                 <ul>
@@ -220,21 +221,7 @@
                 <div class="settings-section">
                     <h3><i class="fas fa-user-secret"></i> Stealth</h3>
                     <div class="setting-item">
-                        <label for="cloak-site-checkbox" class="checkbox-label">
-                            <input type="checkbox" id="cloak-site-checkbox">
-                            <span>Cloak Games in about:blank</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <h3><i class="fas fa-keyboard"></i> Panic Mode</h3>
-                    <div class="setting-item">
-                        <label for="panic-key-input">Panic Key</label>
-                        <input type="text" id="panic-key-input" readonly placeholder="Click and press a key">
-                    </div>
-                    <div class="setting-item">
-                        <button id="panic-btn" class="modal-button">Panic Button</button>
+                        <button id="stealth-btn" class="modal-button">Open Site in about:blank</button>
                     </div>
                 </div>
 

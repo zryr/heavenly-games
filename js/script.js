@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const siteTitleInput = document.getElementById('site-title-input');
     const siteIconInput = document.getElementById('site-icon-input');
     const presetIconsContainer = document.getElementById('preset-icons-container');
-    const panicKeyInput = document.getElementById('panic-key-input');
     const resetSettingsBtn = document.getElementById('reset-settings-btn');
     const panicOverlay = document.getElementById('panic-overlay');
     const skeletonLoader = document.getElementById('skeleton-loader');
@@ -55,10 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const redirectContinueBtn = document.getElementById('redirect-continue-btn');
     const redirectModalCloseBtn = redirectModal.querySelector('.modal-close-btn');
 
-    // Suggestion Modal Elements
-    const suggestionModal = document.getElementById('suggestion-modal');
-    const suggestGameBtn = document.getElementById('suggest-game-btn');
-
     // Toast Notification
     const toastNotification = document.getElementById('toast-notification');
 
@@ -69,16 +64,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmModalOkBtn = document.getElementById('confirm-modal-ok-btn');
     const confirmModalCancelBtn = document.getElementById('confirm-modal-cancel-btn');
     const confirmModalCloseBtn = document.getElementById('confirm-modal-close-btn');
-    const cloakSiteCheckbox = document.getElementById('cloak-site-checkbox');
-    const panicBtn = document.getElementById('panic-btn');
+    const stealthBtn = document.getElementById('stealth-btn');
 
 
     // --- Settings ---
-    const PRESET_ICONS = [
-        'images/drive-mad.webp',
-        'https://www.google.com/s2/favicons?domain=google.com',
-        'https://www.google.com/s2/favicons?domain=youtube.com',
-        'https://www.google.com/s2/favicons?domain=discord.com'
+    const PRESETS = [
+        { title: 'Heaven', icon: 'images/drive-mad.webp' },
+        { title: 'Google', icon: 'https://www.google.com/s2/favicons?domain=google.com' },
+        { title: 'YouTube', icon: 'https://www.google.com/s2/favicons?domain=youtube.com' },
+        { title: 'Discord', icon: 'https://www.google.com/s2/favicons?domain=discord.com' },
+        { title: 'Google Classroom', icon: 'https://www.google.com/s2/favicons?domain=classroom.google.com' },
+        { title: 'ClassLink', icon: 'https://www.google.com/s2/favicons?domain=classlink.com' },
+        { title: 'Canvas', icon: 'https://www.google.com/s2/favicons?domain=instructure.com' },
+        { title: 'Schoology', icon: 'https://www.google.com/s2/favicons?domain=schoology.com' }
     ];
 
     function applyAppearanceSettings() {
@@ -97,13 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Populate preset icons
         presetIconsContainer.innerHTML = '';
-        PRESET_ICONS.forEach(iconUrl => {
+        PRESETS.forEach(preset => {
             const img = document.createElement('img');
-            img.src = iconUrl;
+            img.src = preset.icon;
             img.classList.add('preset-icon');
             img.addEventListener('click', () => {
-                siteIconInput.value = iconUrl;
-                updateIcon(iconUrl);
+                siteIconInput.value = preset.icon;
+                updateIcon(preset.icon);
+                siteTitleInput.value = preset.title;
+                updateTitle(preset.title);
                 document.querySelector('.preset-icon.selected')?.classList.remove('selected');
                 img.classList.add('selected');
             });
@@ -142,54 +142,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirmed) {
             localStorage.removeItem('siteTitle');
             localStorage.removeItem('siteIcon');
-            localStorage.removeItem('panicKey');
             window.location.reload();
         }
     });
 
-    // --- Panic Mode ---
-    let panicKey = '\\'; // Default key
-
-    function initializePanicMode() {
-        const savedKey = localStorage.getItem('panicKey');
-        if (savedKey) {
-            panicKey = savedKey;
+    stealthBtn.addEventListener('click', () => {
+        const newWindow = window.open('about:blank', '_blank');
+        if (newWindow) {
+            const iframe = newWindow.document.createElement('iframe');
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = 'none';
+            iframe.src = window.location.origin + window.location.pathname;
+            newWindow.document.body.style.margin = '0';
+            newWindow.document.body.appendChild(iframe);
+            window.close();
+        } else {
+            showToast('Popup blocked! Please allow popups to use Stealth Mode.');
         }
-        panicKeyInput.value = panicKey;
-    }
-
-    panicKeyInput.addEventListener('click', () => {
-        panicKeyInput.placeholder = 'Press any key...';
-    });
-
-    panicKeyInput.addEventListener('blur', () => {
-        panicKeyInput.placeholder = 'Click and press a key';
-    });
-
-    panicKeyInput.addEventListener('keydown', (e) => {
-        e.preventDefault();
-        panicKey = e.key;
-        panicKeyInput.value = panicKey;
-        panicKeyInput.placeholder = 'Click and press a key';
-        try {
-            localStorage.setItem('panicKey', panicKey);
-        } catch (err) {
-            console.warn('Could not save panic key to localStorage.', err);
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === panicKey) {
-            if (panicOverlay.style.display === 'none') {
-                panicOverlay.style.display = 'flex';
-            } else {
-                panicOverlay.style.display = 'none';
-            }
-        }
-    });
-
-    panicBtn.addEventListener('click', () => {
-        window.location.href = 'about:blank';
     });
 
 
@@ -683,23 +653,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { once: true });
     }
 
-
-    function openInAboutBlank(url) {
-        const newWindow = window.open('about:blank', '_blank');
-        if (newWindow) {
-            newWindow.document.write(`
-                <style>
-                    body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000; }
-                    iframe { border: none; width: 100%; height: 100%; }
-                </style>
-                <iframe src="${url}"></iframe>
-            `);
-            newWindow.document.close();
-        } else {
-            showToast('Popup blocked! Please allow popups.');
-        }
-    }
-
     // --- Modal Functions ---
 
     function openModal(gameId) {
@@ -870,18 +823,6 @@ document.addEventListener('DOMContentLoaded', () => {
         hideAnimatedModal(redirectModal);
     });
 
-    // --- Suggestion Modal Logic ---
-    suggestGameBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        showAnimatedModal(suggestionModal);
-    });
-
-    suggestionModal.addEventListener('click', (event) => {
-        if (event.target === suggestionModal || event.target.closest('.modal-close-btn')) {
-            hideAnimatedModal(suggestionModal);
-        }
-    });
-
 
     // --- Modal Event Listeners ---
 
@@ -928,11 +869,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (selectedUnblocker === 'proxy1') finalUrl = PROXY_URL_1 + targetUrl;
                 else if (selectedUnblocker === 'proxy2') finalUrl = PROXY_URL_2 + targetUrl;
 
-        if (localStorage.getItem('cloakSite') === 'true') {
-            openInAboutBlank(finalUrl);
-        } else {
-            window.open(finalUrl, '_blank');
-        }
+        window.open(finalUrl, '_blank');
         closeModal();
     });
 
@@ -976,15 +913,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         applyAppearanceSettings();
-        initializePanicMode();
-
-        // Restore and handle cloak setting
-        const cloakEnabled = localStorage.getItem('cloakSite') === 'true';
-        cloakSiteCheckbox.checked = cloakEnabled;
-        cloakSiteCheckbox.addEventListener('change', () => {
-            localStorage.setItem('cloakSite', cloakSiteCheckbox.checked);
-            showToast(`About:blank cloaking ${cloakSiteCheckbox.checked ? 'enabled' : 'disabled'}.`);
-        });
 
         try {
             const response = await fetch('games.json');
@@ -1050,16 +978,33 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Sidebar Toggle & Other minor listeners ---
-    sidebarToggle.addEventListener('click', () => {
-        sidebarToggle.classList.toggle('toggled');
-        sidebar.classList.toggle('collapsed');
-        body.classList.toggle('sidebar-is-collapsed');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    function closeSidebar() {
+        sidebar.classList.add('collapsed');
+        sidebarToggle.classList.remove('toggled');
+        body.classList.add('sidebar-is-collapsed');
+        sidebarOverlay.style.display = 'none';
         try {
-            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+            localStorage.setItem('sidebarCollapsed', true);
+        } catch (e) {
+            console.warn('Could not save sidebar state.', e);
+        }
+    }
+
+    sidebarToggle.addEventListener('click', () => {
+        const isCollapsed = sidebar.classList.toggle('collapsed');
+        sidebarToggle.classList.toggle('toggled', !isCollapsed);
+        body.classList.toggle('sidebar-is-collapsed', isCollapsed);
+        sidebarOverlay.style.display = isCollapsed ? 'none' : 'block';
+        try {
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
         } catch (e) {
             console.warn('Could not save sidebar state.', e);
         }
     });
+
+    sidebarOverlay.addEventListener('click', closeSidebar);
     document.querySelector('.sidebar-nav').addEventListener('click', (event) => {
         const link = event.target.closest('a');
         if (!link) return;
