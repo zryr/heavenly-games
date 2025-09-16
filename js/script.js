@@ -66,6 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmModalCloseBtn = document.getElementById('confirm-modal-close-btn');
     const stealthBtn = document.getElementById('stealth-btn');
 
+    // Suggestion Modal Elements
+    const suggestGameBtn = document.getElementById('suggest-game-btn');
+    const suggestionModal = document.getElementById('suggestion-modal');
+
 
     // --- Settings ---
     const PRESETS = [
@@ -1079,5 +1083,17 @@ document.addEventListener('DOMContentLoaded', () => {
         activeFilters.platforms = Array.from(platformCheckboxes).map(cb => cb.value);
         hideAnimatedModal(filterModal);
         showHomepage('home'); // Re-render the homepage with the new filters
+    });
+
+    // Suggestion Modal Logic
+    suggestGameBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showAnimatedModal(suggestionModal);
+    });
+
+    suggestionModal.addEventListener('click', (event) => {
+        if (event.target === suggestionModal || event.target.closest('.modal-close-btn')) {
+            hideAnimatedModal(suggestionModal);
+        }
     });
 });

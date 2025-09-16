@@ -147,6 +147,11 @@ body {
     /* No specific styles needed here anymore */
 }
 
+.header-icons {
+    display: flex;
+    gap: 10px;
+}
+
 .layout-container {
     display: flex;
 }
@@ -643,7 +648,6 @@ body {
 
 .modal-overlay.visible {
     display: flex;
-    animation: fadeIn var(--animation-duration) ease-out forwards;
 }
 
 .modal-overlay.closing {
