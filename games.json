@@ -54,5 +54,27 @@
     "likes": 0,
     "dislikes": 0,
     "views": 0
+  },
+  {
+    "id": "snow-rider-3d",
+    "title": "Snow Rider 3D",
+    "icon": "https://placehold.co/150x150/ffffff/1a1a1a?text=Snow+Rider+3D",
+    "iframeSrc": "Games/Snow-Rider-3D/index.html",
+    "description": "Get ready for a wild ride in Snow Rider 3D! Speed down icy slopes on your sled, dodging trees, rocks, and cabins. Grab gifts to unlock cool new sleds and rack up the highest score. How far can you go?",
+    "controls": [
+      "Move - Arrow keys or W,A,S,D"
+    ],
+    "tags": ["Racing", "Skill"],
+    "genres": ["Driving", "Skill"],
+    "platforms": ["PC Only", "Keyboard Needed"],
+    "isTrending": false,
+    "isNew": true,
+    "isFavorited": false,
+    "launchType": "iframe",
+    "creator": "GameBiz",
+    "creatorProfile": "#",
+    "likes": 0,
+    "dislikes": 0,
+    "views": 0
   }
 ]
