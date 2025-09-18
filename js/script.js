@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (genre) {
             // Show specific genre section
-            const gamesToDisplay = filteredGames.filter(game => game.genres && game.genres.includes(genre)); // Check if genres exists
+            const gamesToDisplay = filteredGames.filter(game => game.tags && game.tags.includes(genre));
             genreTitleElement.textContent = `${genre} Games`;
             renderGameGrid(gamesToDisplay, genreGrid);
             genreGamesSection.style.display = 'block';
@@ -531,6 +531,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         span.innerHTML = `<i class="${iconClass}"></i> ${tag}`;
                         span.addEventListener('click', () => {
                             showHomepage('genre', tag);
+                            // Highlight the corresponding sidebar link
+                            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+                            const sidebarLink = document.querySelector(`.sidebar-nav a[data-genre="${tag}"]`);
+                            if (sidebarLink) {
+                                sidebarLink.classList.add('active');
+                            }
                         });
                         gameTagsList.appendChild(span);
                     });
@@ -549,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Populate related games
         const relatedGrid = document.getElementById('related-grid');
-        const relatedGames = games.filter(g => (g.genres || []).some(genre => (game.genres || []).includes(genre)) && g.id !== game.id).slice(0, 5);
+        const relatedGames = games.filter(g => (g.tags || []).some(tag => (game.tags || []).includes(tag)) && g.id !== game.id).slice(0, 5);
         renderGameGrid(relatedGames, relatedGrid);
 
         // Populate creator info
