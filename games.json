@@ -9,8 +9,7 @@
       "Steer forward - W, D, X, Up arrow, Right arrow, Mouse click",
       "Steer backward - S, A, Z, Down arrow, Left arrow"
     ],
-    "tags": ["Car", "Strategy"],
-    "genres": ["Driving", "Skill", "Simulation"],
+    "tags": ["Car", "Strategy", "Driving", "Skill", "Simulation"],
     "platforms": ["Mobile Supported"],
     "isTrending": true,
     "isNew": true,
@@ -41,7 +40,6 @@
         "Touch center of screen to pause on mobile"
     ],
     "tags": ["Driving", "Racing"],
-    "genres": ["Driving", "Racing"],
     "platforms": ["PC Only", "Keyboard Needed"],
     "isTrending": true,
     "isNew": true,
@@ -65,7 +63,6 @@
       "Move - Arrow keys or W,A,S,D"
     ],
     "tags": ["3D", "Driving", "Skill"],
-    "genres": ["Driving", "Skill"],
     "platforms": ["Keyboard Needed"],
     "isTrending": false,
     "isNew": true,
