@@ -16,7 +16,7 @@
     <script>
       var gameInstance = UnityLoader.instantiate(
         "gameContainer",
-        "Build/SnowRider3D-gd-1.json",
+        "Build/SnowRider3D.json",
         {
           onProgress: UnityProgress,
           Module: {
@@ -34,6 +34,7 @@
       class="webgl-content"
       style="position: absolute; width: 100%; height: 100%"
     >
+      <img src="TemplateData/logo.png" style="position: absolute; top: 10px; left: 10px; width: 100px; height: auto;">
       <div
         id="gameContainer"
         style="width: 960px; height: 600px; margin: auto"
