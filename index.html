@@ -3,70 +3,619 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heaven</title>
-    <link rel="shortcut icon" href="images/drive-mad.webp" type="image/x-icon">
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>HEAVEN - Unblocked Games</title>
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* --- CSS Styles --- */
+
+        :root {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --accent-cyan: #00ffff;
+            --sidebar-width-expanded: 250px;
+            --sidebar-width-collapsed: 80px; /* Adjust based on icon size */
+            --header-height: 60px;
+            --modal-bg-color: #282828;
+            --button-bg-color: #3a3a3a;
+            --button-hover-color: #4a4a4a;
+            --button-selected-color: rgba(0, 255, 255, 0.3); /* Cyan light up */
+            --button-border-color: #555;
+            --animation-duration: 0.25s;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding-top: var(--header-height); /* Add padding to prevent content hiding under header */
+            overflow-x: hidden; /* Prevent horizontal scroll due to transitions */
+        }
+
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background-color: #282828; /* Slightly different dark shade */
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+            z-index: 100; /* Stay on top */
+            justify-content: space-between;
+        }
+
+        .site-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--accent-cyan); /* Cyan accent for site name */
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .search-container {
+            position: relative; /* Relative to its flex container (header) */
+            flex-grow: 1; /* Allow it to take available space */
+            max-width: 400px; /* Limit max width */
+            margin: 0 auto; /* Center within available space */
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #333;
+            color: var(--text-color);
+        }
+
+        .search-results-dropdown {
+            position: absolute;
+            top: 100%; /* Below the input */
+            left: 0;
+            width: 100%;
+            background-color: var(--modal-bg-color); /* Use modal background */
+            border: 1px solid #555;
+            border-radius: 4px;
+            max-height: 200px; /* Limit height */
+            overflow-y: auto;
+            z-index: 50; /* Below header */
+            display: none; /* Hide by default */
+            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+        }
+
+        .search-results-dropdown.visible {
+            display: block;
+        }
+
+        .search-results-dropdown > div { /* Style for each search result item */
+            padding: 8px;
+            display: flex; /* Icon on left, text on right */
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .search-results-dropdown > div:hover {
+            background-color: var(--button-hover-color);
+        }
+
+         .search-results-dropdown > div img { /* Search result icon */
+            width: 30px; /* Small icon size */
+            height: 30px;
+            border-radius: 15%; /* Squircle-like */
+            margin-right: 10px;
+            object-fit: cover;
+         }
+
+        .layout-container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width-expanded);
+            background-color: #222; /* Darker shade */
+            color: var(--text-color);
+            padding: 20px;
+            box-sizing: border-box;
+            transition: width 0.3s ease, padding 0.3s ease;
+            position: fixed;
+            left: 0;
+            top: var(--header-height); /* Position below header */
+            bottom: 0;
+            overflow-y: auto; /* Scroll if content overflows */
+            z-index: 90;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-width-collapsed);
+            padding: 20px 10px; /* Less padding when collapsed */
+            align-items: center; /* Center content when collapsed */
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: var(--accent-cyan); /* Cyan icon */
+            font-size: 1.5em;
+            cursor: pointer;
+            display: block;
+            margin-bottom: 20px;
+            width: 100%; /* Make button full width */
+            text-align: center; /* Center icon */
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .sidebar-nav a i {
+            font-size: 1.2em;
+            margin-right: 15px; /* Space between icon and text */
+            width: 30px; /* Fixed width for icon area */
+            text-align: center; /* Center icon */
+        }
+
+         .sidebar.collapsed .sidebar-nav a .link-text {
+            display: none; /* Hide text when collapsed */
+         }
+
+         .sidebar.collapsed .sidebar-nav a i {
+            margin-right: 0; /* No margin when text is hidden */
+         }
+
+        .sidebar-nav a:hover {
+            background-color: #333;
+            color: var(--accent-cyan);
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background-color: #555; /* Grayish line */
+            margin: 20px 0;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width-expanded); /* Space for sidebar */
+            padding: 20px;
+            flex-grow: 1;
+            transition: margin-left 0.3s ease;
+            width: calc(100% - var(--sidebar-width-expanded)); /* Ensure content fits */
+            box-sizing: border-box;
+        }
+
+         body.sidebar-is-collapsed .main-content {
+             margin-left: var(--sidebar-width-collapsed); /* Adjust margin when sidebar collapses */
+             width: calc(100% - var(--sidebar-width-collapsed));
+         }
+
+        /* --- Homepage Grid Styles --- */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive grid */
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .game-card {
+            background-color: #282828;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-color);
+            display: block; /* Make the whole card clickable */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* For positioning pills */
+            overflow: hidden; /* Hide parts of pills if they stick out */
+            cursor: pointer; /* Indicate it's clickable */
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px); /* Lift effect */
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3); /* Cyan glow */
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 150px; /* Fixed height for icons */
+            object-fit: cover; /* Crop image to fit */
+            border-radius: 15%; /* Squircle effect */
+            margin-bottom: 10px;
+            display: block; /* Remove extra space below image */
+        }
+
+        .game-card .pills-container {
+            position: absolute;
+            top: 5px; /* Adjust positioning relative to card top */
+            right: 5px; /* Adjust positioning relative to card right */
+            display: flex;
+            flex-direction: column; /* Stack pills vertically */
+            gap: 3px;
+            z-index: 5; /* Ensure pills are above the image */
+        }
+
+        .game-card .pill {
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent dark */
+            color: #fff;
+            font-size: 0.7em;
+            padding: 3px 6px;
+            border-radius: 10px; /* Rounded pill shape */
+            white-space: nowrap; /* Prevent text wrap */
+        }
+
+        .game-card .game-title {
+            font-size: 1em;
+            font-weight: bold;
+            white-space: nowrap; /* Prevent title wrapping */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Add ellipsis if title is too long */
+        }
+
+        /* --- Game Detail View Styles --- */
+        #game-detail-view {
+            display: none; /* Hidden by default */
+            padding: 20px;
+            background-color: #222;
+            border-radius: 8px;
+        }
+
+        #game-iframe-container {
+            position: relative; /* Needed for fullscreen button */
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio (9 / 16 * 100) */
+            height: 0;
+            overflow: hidden; /* Hide overflow from aspect ratio trick */
+            margin-bottom: 20px;
+        }
+
+        #splash-game-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        #fullscreen-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 10; /* Above iframe */
+            background-color: rgba(0, 0, 0, 0.5);
+            color: var(--accent-cyan);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        #fullscreen-btn:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        #game-info h2 {
+            color: var(--accent-cyan);
+            margin-top: 0;
+        }
+
+        #game-description h3 {
+             margin-bottom: 5px;
+             color: #aaa; /* Lighter grey for subheadings */
+        }
+
+        #game-description p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        #game-controls h3,
+        #game-tags h3 {
+             margin-bottom: 5px;
+             color: #aaa; /* Lighter grey for subheadings */
+        }
+
+        #game-controls ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #game-controls li {
+            background-color: #333;
+            padding: 6px 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+
+        #game-tags .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        #game-tags .tag {
+            background-color: var(--accent-cyan);
+            color: #1a1a1a; /* Dark text on cyan */
+            padding: 4px 10px;
+            border-radius: 12px; /* More rounded pill */
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        /* --- Modal Animation Keyframes --- */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes scaleOut {
+            from { transform: scale(1); opacity: 1; }
+            to { transform: scale(0.9); opacity: 0; }
+        }
+
+
+        /* --- Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+            z-index: 1000; /* High z-index to cover everything */
+            display: none; /* Initially hidden */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+            animation: fadeIn var(--animation-duration) ease-out forwards;
+        }
+
+        .modal-overlay.closing {
+            animation: fadeOut var(--animation-duration) ease-in forwards;
+        }
+
+        .modal-content {
+            background-color: var(--modal-bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px; /* Limit modal width */
+            position: relative;
+        }
+
+        .modal-overlay.visible .modal-content {
+            animation: scaleIn var(--animation-duration) ease-out forwards;
+        }
+
+        .modal-overlay.closing .modal-content {
+            animation: scaleOut var(--animation-duration) ease-in forwards;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #555;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--accent-cyan);
+            font-size: 1.5em;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            color: #fff; /* White */
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px;
+             line-height: 1; /* Prevent extra space below X */
+        }
+         .modal-close-btn:hover {
+             color: #aaa; /* Grey on hover */
+         }
+
+
+        .modal-body p {
+            margin-bottom: 15px;
+        }
+
+        .modal-options-group {
+            margin-bottom: 20px;
+        }
+
+         .modal-options-group h3 {
+             margin-top: 0;
+             margin-bottom: 10px;
+             color: #aaa; /* Lighter grey */
+         }
+
+        .modal-button {
+            display: block; /* Make buttons full width */
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: var(--button-bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--button-border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            text-align: center;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .modal-button:last-child {
+            margin-bottom: 0; /* Remove bottom margin for the last button in a group */
+        }
+
+        .modal-button:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        .modal-button.selected {
+            background-color: var(--button-selected-color); /* Cyan light up effect */
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 8px var(--accent-cyan);
+        }
+
+        #modal-go-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-cyan); /* Cyan background for action button */
+            color: var(--bg-color); /* Dark text on cyan */
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.2s ease, opacity 0.2s ease;
+        }
+
+         #modal-go-button:hover {
+             background-color: #33ffff; /* Slightly lighter cyan on hover */
+         }
+
+         #modal-go-button:disabled {
+             background-color: #555;
+             color: #888;
+             cursor: not-allowed;
+             opacity: 0.7;
+         }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: var(--sidebar-width-collapsed);
+                padding: 20px 10px;
+            }
+             .sidebar.collapsed {
+                width: 0; /* Hide completely or make very small */
+                overflow: hidden;
+             }
+            .sidebar-nav a .link-text {
+                display: none;
+            }
+            .sidebar-nav a i {
+                 margin-right: 0;
+            }
+            .main-content {
+                margin-left: var(--sidebar-width-collapsed);
+                 width: calc(100% - var(--sidebar-width-collapsed));
+            }
+            body.sidebar-is-collapsed .main-content {
+                 margin-left: 0; /* No margin when sidebar is hidden */
+                 width: 100%;
+            }
+            .game-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
+            }
+            .game-card img {
+                height: 120px;
+            }
+            .site-name {
+                font-size: 1.5em;
+            }
+             .search-container {
+                max-width: 200px;
+             }
+        }
+
+         @media (max-width: 480px) {
+            .site-header {
+                flex-direction: column;
+                height: auto;
+                padding: 10px;
+            }
+            .site-name {
+                margin-bottom: 10px;
+            }
+            .search-container {
+                width: 90%;
+                margin: 0 auto;
+                max-width: none;
+            }
+            body {
+                padding-top: 100px; /* Adjust padding for stacked header */
+            }
+            .sidebar {
+                 top: 100px; /* Adjust position below stacked header */
+            }
+            .main-content {
+                 margin-left: var(--sidebar-width-collapsed); /* Keep some margin unless sidebar is hidden */
+            }
+            .modal-content {
+                 width: 95%; /* Make modal wider on smaller screens */
+            }
+         }
+    </style>
 </head>
 <body>
-    <div id="skeleton-loader">
-        <div class="skeleton-header"></div>
-        <div class="skeleton-main">
-            <div class="skeleton-sidebar"></div>
-            <div class="skeleton-content">
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-            </div>
-        </div>
-    </div>
-    <canvas id="stars-canvas"></canvas>
     <header class="site-header">
-        <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Toggle Sidebar">
-            <div class="hamburger-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </button>
-        <a href="index.html" class="site-name">
-            <i class="fas fa-cloud"></i> HEAVEN
-        </a>
+        <div class="site-name">HEAVEN</div>
         <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
             <input type="text" id="search-input" placeholder="Search games...">
             <div id="search-results" class="search-results-dropdown">
                 <!-- Search results will be dynamically added here by JS -->
             </div>
         </div>
-        <button id="filter-btn" class="icon-btn" aria-label="Filter Games"><i class="fas fa-filter"></i></button>
-        <div class="header-icons">
-            <button id="movies-btn" class="icon-btn" aria-label="Movies"><i class="fas fa-film"></i></button>
-            <button id="settings-btn" class="icon-btn" aria-label="Settings"><i class="fas fa-cog"></i></button>
-        </div>
+        <!-- Add social links or other header elements here if needed -->
     </header>
 
     <div class="layout-container">
-        <div id="sidebar-overlay" style="display: none;"></div>
         <aside class="sidebar">
+            <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
             <nav class="sidebar-nav">
                 <ul>
                     <li><a href="#" data-section="home"><i class="fas fa-home"></i> <span class="link-text">Home</span></a></li>
                     <li><a href="#" data-section="trending"><i class="fas fa-fire"></i> <span class="link-text">Trending</span></a></li>
                     <li><a href="#" data-section="new"><i class="fas fa-clock"></i> <span class="link-text">New</span></a></li>
                     <li><a href="#" data-section="random"><i class="fas fa-random"></i> <span class="link-text">Random</span></a></li>
-                </ul>
-                <div class="sidebar-divider"></div>
-                <ul class="suggestion-list">
-                    <li><a href="#" id="suggest-game-btn"><i class="fas fa-lightbulb"></i> <span class="link-text">Suggest New Games</span></a></li>
                 </ul>
                 <div class="sidebar-divider"></div>
                 <ul class="genre-list">
@@ -91,22 +640,6 @@
         <main class="main-content">
             <!-- Homepage View (Visible by default or when Home/Category links are clicked) -->
             <section id="homepage-view">
-                <section id="hero-section">
-                    <!-- Hero content will be loaded here by JS -->
-                </section>
-                <section id="recently-played-games" style="display: none;">
-                    <h2>Recently Played</h2>
-                    <div class="game-grid" id="recently-played-grid">
-                        <!-- Recently played games will be loaded here by JS -->
-                    </div>
-                </section>
-                <section id="popular-games">
-                    <h2>Popular Games</h2>
-                    <div class="game-grid" id="popular-grid">
-                        <!-- Popular games will be loaded here by JS -->
-                    </div>
-                </section>
-
                 <section id="trending-games">
                     <h2>Trending Games</h2>
                     <div class="game-grid" id="trending-grid">
@@ -140,39 +673,11 @@
 
             <!-- Game Detail View (Hidden by default, shown when a game is clicked) -->
             <section id="game-detail-view" style="display: none;">
-                <div class="game-action-bar">
-                    <h1 id="game-title-main" class="game-title-main"></h1>
-                    <div class="game-page-icons">
-                        <button id="fullscreen-btn" class="icon-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i></button>
-                        <button id="favorite-btn" class="icon-btn"><i class="fas fa-star"></i></button>
-                        <button id="share-btn" class="icon-btn"><i class="fas fa-share-alt"></i></button>
-                    </div>
-                </div>
+                 <h2 id="game-title"></h2>
                  <div id="game-iframe-container">
                      <!-- Note: The iframe is loaded dynamically by JS -->
                      <iframe id="splash-game-content" frameborder="0" allow="autoplay; fullscreen; gamepad; ambient-light-sensor; encrypted-media" allowfullscreen="" seamless="" scrolling="no" src=""></iframe>
-                 </div>
-                 <div class="game-metadata-bar">
-                     <div class="view-count meta-item">
-                         <i class="fas fa-eye"></i>
-                         <span id="view-count-number">0</span>
-                     </div>
-                     <div class="meta-item">
-                         <i class="fas fa-user"></i>
-                         <span id="game-creator"></span>
-                     </div>
-                     <div class="meta-item">
-                         <i class="fas fa-clock"></i>
-                         <span id="game-playtime"></span>
-                     </div>
-                     <div class="rating-container">
-                         <button id="like-btn" class="rating-btn"><i class="fas fa-thumbs-up"></i></button>
-                         <div class="rating-bar">
-                             <div id="like-bar" class="like-bar"></div>
-                         </div>
-                         <button id="dislike-btn" class="rating-btn"><i class="fas fa-thumbs-down"></i></button>
-                         <span id="like-percentage">0%</span>
-                     </div>
+                      <button id="fullscreen-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i> Fullscreen</button>
                  </div>
                  <div id="game-info">
                      <div id="game-description">
@@ -188,50 +693,6 @@
                         <div class="tags-list"></div>
                      </div>
                  </div>
-                 <section id="related-games">
-                    <h2>Related Games</h2>
-                    <div class="game-grid" id="related-grid">
-                        <!-- Related games will be loaded here by JS -->
-                    </div>
-                </section>
-            </section>
-
-            <!-- Settings View (Hidden by default) -->
-            <section id="settings-view" style="display: none;">
-                <h2>Settings</h2>
-
-                <div class="settings-section">
-                    <h3><i class="fas fa-paint-brush"></i> Appearance</h3>
-                    <div class="setting-item">
-                        <label for="site-title-input">Site Title</label>
-                        <input type="text" id="site-title-input" placeholder="Enter new title">
-                    </div>
-                    <div class="setting-item">
-                        <label for="site-icon-input">Site Icon URL</label>
-                        <input type="text" id="site-icon-input" placeholder="Enter new icon URL">
-                    </div>
-                    <div class="setting-item">
-                        <label>Preset Icons</label>
-                        <div class="preset-icons" id="preset-icons-container">
-                            <!-- Presets will be loaded here by JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <h3><i class="fas fa-user-secret"></i> Stealth</h3>
-                    <div class="setting-item">
-                        <button id="stealth-btn" class="modal-button">Open Site in about:blank</button>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <h3><i class="fas fa-undo"></i> Reset</h3>
-                     <div class="setting-item">
-                        <button id="reset-settings-btn" class="btn-danger">Reset All Settings</button>
-                    </div>
-                </div>
-
             </section>
 
         </main>
@@ -264,79 +725,471 @@
     </div>
 
 
-    <script src="js/script.js"></script>
-    <script src="js/background.js"></script>
+    <script>
+        // --- JavaScript ---
 
-    <!-- Panic Mode Overlay -->
-    <div id="panic-overlay" style="display: none;">
-        <h1>404 Not Found</h1>
-        <p>The requested URL was not found on this server.</p>
-    </div>
+        // --- Game Data ---
+        // Store all game data in this array
+        const games = [
+            {
+                id: 'snow-rider-3d',
+                title: 'Snow Rider 3D',
+                icon: 'https://www.coolmathgames.com/sites/default/files/styles/mobile_game_image/public/snow-rider-3d-thumb-mobile.jpg?itok=yZKH2H3P',
+                iframeSrc: 'https://html5.gamedistribution.com/rvvAS-A-D-catalog/81d723c748e7403c8b4117470a6e5564/',
+                description: 'Snow Rider 3D is a fast-paced racing game where you ride a sleigh down a snowy mountain. Avoid obstacles and collect gifts to score points.',
+                controls: [
+                    'Steer left - A or Left Arrow',
+                    'Steer right - D or Right Arrow'
+                ],
+                tags: ['Racing', '3D', 'Endless Runner'],
+                genres: ['Racing', '3D', 'Running'],
+                platforms: ['PC Only', 'Keyboard Needed'],
+                isTrending: true,
+                isNew: true,
+                isFavorited: false,
+                launchType: 'iframe'
+            },
+          {
+            id: 'drive-mad',
+            title: 'Drive Mad',
+            icon: 'https://cpsgames.org//thumbs/drive-mad_2.webp', // Using link as requested for now
+            iframeSrc: 'https://lolygames.github.io/drive-mad/',
+            description: `Drive Mad is an exhilarating car game that challenges you to navigate through tracks laden with obstacles, aiming to cross the finish line intact. Mastering your vehicle's speed is crucial to prevent it from flipping amidst the myriad of daring stunts and inventive obstacles presented across each level.
 
-    <!-- Redirect Modal -->
-    <div class="modal-overlay" id="redirect-modal" style="display: none;">
-        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="redirect-modal-title">
-            <div class="modal-header">
-                <h2 id="redirect-modal-title">Movies | Reds Exploit Corner</h2>
-                <button class="modal-close-btn" aria-label="Close popup">×</button>
-            </div>
-            <div class="modal-body">
-                <p>You will be redirected to a different site.</p>
-                <button id="redirect-continue-btn" class="modal-button btn-primary">Continue</button>
-            </div>
-        </div>
-    </div>
+The game tests your driving prowess and ability to tackle increasingly complex courses with precision. Are you equipped with the skills required to conquer every level in Drive Mad, proving your mettle in this thrilling automotive adventure?`,
+            controls: [
+              'Steer forward - W, D, X, Up arrow, Right arrow, Mouse click',
+              'Steer backward - S, A, Z, Down arrow, Left arrow'
+            ],
+            tags: ['Car', 'Strategy'],
+            genres: ['Driving', 'Skill', 'Simulation'], // Genres for sidebar filtering
+            platforms: ['PC Only', 'Keyboard Needed', 'Mobile Supported'], // Pills
+            isTrending: true,
+            isNew: true, // Example of a new game
+            isFavorited: false, // Default, will check localStorage
+            launchType: 'iframe' // Standard iframe launch
+          },
+          // Add a new game object that uses the modal launch type
+           {
+            id: 'axiom', // Unique ID
+            title: 'Axiom', // Example Title
+            icon: 'https://via.placeholder.com/150/00ffff/1a1a1a?text=Axiom', // Example Icon
+            description: 'This game uses a special launch method with proxies.', // Description (optional for modal type)
+            controls: ['Depends on launch method'], // Controls (optional for modal type)
+            tags: ['Special', 'Proxy'], // Tags (optional for modal type)
+            genres: ['Arcade', 'Shooting'], // Assign to a genre
+            platforms: ['Needs Options'], // Example pill
+            isTrending: true, // Can be trending/new/favorited
+            isNew: true,
+            isFavorited: false,
+            launchType: 'modal', // <-- **This indicates the modal launch**
+            normalUrl: 'https://www.newgrounds.com/portal/view/972740', // URL for normal mode
+            fullscreenUrl: 'https://uploads.ungrounded.net/alternate/6510000/6510853_alternate_303470_r35.zip/' // URL for fullscreen mode (Note: .zip might not work directly in iframe, this is just the provided URL)
+          },
+           {
+            id: 'example-game-3',
+            title: 'Cool Strategy Game',
+            icon: 'https://via.placeholder.com/150/ff00ff/1a1a1a?text=Game+Icon+3', // Placeholder icon
+            iframeSrc: 'https://example.com/games/strategy/', // Replace with actual game URL
+            description: 'Plan your moves carefully!',
+            controls: ['Mouse Click'],
+            tags: ['Strategy', 'Puzzle'],
+            genres: ['Strategy', 'Puzzle'],
+            platforms: ['PC Only', 'Mouse Needed'],
+            isTrending: true,
+            isNew: false,
+            isFavorited: false,
+            launchType: 'iframe' // Standard iframe launch
+          },
+        ];
 
-    <!-- Toast Notification -->
-    <div id="toast-notification" class="toast"></div>
+        // --- Proxy URLs ---
+        const PROXY_URL_1 = 'https://4893dm-8080.csb.app/proxy/';
+        const PROXY_URL_2 = 'https://9lckky-8080.csb.app/proxy/';
 
-    <!-- Confirm Modal -->
-    <div class="modal-overlay" id="confirm-modal" style="display: none;">
-        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
-            <div class="modal-header">
-                <h2 id="confirm-modal-title">Are you sure?</h2>
-                <button class="modal-close-btn" id="confirm-modal-close-btn" aria-label="Close popup">×</button>
-            </div>
-            <div class="modal-body">
-                <p id="confirm-modal-text">This action cannot be undone.</p>
-                <div class="modal-options-group" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-                    <button id="confirm-modal-cancel-btn" class="modal-button">Cancel</button>
-                    <button id="confirm-modal-ok-btn" class="modal-button btn-danger">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
+        // --- DOM Element References ---
+        const sidebarToggle = document.getElementById('sidebar-toggle-btn');
+        const sidebar = document.querySelector('.sidebar');
+        const body = document.body;
+        const searchInput = document.getElementById('search-input');
+        const searchResultsContainer = document.getElementById('search-results');
+        const homepageView = document.getElementById('homepage-view');
+        const gameDetailView = document.getElementById('game-detail-view');
+        const trendingGrid = document.getElementById('trending-grid');
+        const newGrid = document.getElementById('new-grid');
+        const favoritedGrid = document.getElementById('favorited-grid');
+        const genreGamesSection = document.getElementById('genre-games');
+        const genreTitleElement = document.getElementById('genre-title');
+        const genreGrid = document.getElementById('genre-grid');
+        const gameTitleElement = document.getElementById('game-title');
+        const gameIframe = document.getElementById('splash-game-content');
+        const gameDescriptionElement = gameDetailView.querySelector('#game-description p');
+        const gameControlsList = gameDetailView.querySelector('#game-controls ul');
+        const gameTagsList = gameDetailView.querySelector('#game-tags .tags-list');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const sidebarNavLinks = document.querySelectorAll('.sidebar-nav a');
+        const mainContent = document.querySelector('.main-content'); // Added reference for event delegation
 
-    <!-- Suggestion Modal -->
-    <div class="modal-overlay" id="suggestion-modal" style="display: none;">
-        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="suggestion-modal-title">
-            <div class="modal-header">
-                <h2 id="suggestion-modal-title">Suggest a Game</h2>
-                <button class="modal-close-btn" aria-label="Close popup">×</button>
-            </div>
-            <div class="modal-body">
-                <iframe id="suggestion-iframe" style="width: 100%; height: 60vh; border: none;" src="https://docs.google.com/forms/d/e/1FAIpQLSdZsNur_FfxHVvnPx6nHkd06ww5Mq3EoF6Xax-aTCaUAMoZkw/viewform?embedded=true">Loading...</iframe>
-            </div>
-        </div>
-    </div>
+        // Modal Elements
+        const modalOverlay = document.getElementById('launch-options-modal');
+        const modalCloseBtn = modalOverlay.querySelector('.modal-close-btn');
+        const modalModeButtons = modalOverlay.querySelectorAll('#modal-mode-options .modal-button');
+        const modalUnblockButtons = modalOverlay.querySelectorAll('#modal-unblock-options .modal-button');
+        const modalGoButton = document.getElementById('modal-go-button');
 
-    <!-- Filter Modal -->
-    <div id="filter-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Filter Games</h2>
-                <button class="modal-close-btn" aria-label="Close popup">×</button>
-            </div>
-            <div class="modal-body">
-                <h3>Device Compatibility</h3>
-                <div class="filter-group">
-                    <label><input type="checkbox" name="platform" value="PC Only"> PC Only</label>
-                    <label><input type="checkbox" name="platform" value="Keyboard Needed"> Keyboard Needed</label>
-                    <label><input type="checkbox" name="platform" value="Mobile Supported"> Mobile Supported</label>
-                </div>
-                <button id="apply-filters-btn" class="modal-button">Apply Filters</button>
-            </div>
-        </div>
-    </div>
+        // --- Modal State ---
+        let currentGameModal = null; // Store the game object that opened the modal
+        let selectedMode = null;
+        let selectedUnblocker = 'none'; // Default to 'none'
+        let elementFocusedBeforeModal; // For accessibility focus restoration
+
+
+        // --- Local Storage for Favorites ---
+        function getFavoritedGamesIds() {
+            const favoritedIds = localStorage.getItem('favoritedGames');
+            return favoritedIds ? JSON.parse(favoritedIds) : [];
+        }
+
+        function addFavoriteGame(gameId) {
+            const favoritedIds = getFavoritedGamesIds();
+            if (!favoritedIds.includes(gameId)) {
+                favoritedIds.push(gameId);
+                localStorage.setItem('favoritedGames', JSON.stringify(favoritedIds));
+            }
+        }
+
+        function removeFavoriteGame(gameId) {
+             const favoritedIds = getFavoritedGamesIds().filter(id => id !== gameId);
+             localStorage.setItem('favoritedGames', JSON.stringify(favoritedIds));
+        }
+
+        // --- Rendering Functions ---
+
+        // Renders a grid of games into a specific container
+        function renderGameGrid(gamesToRender, containerElement) {
+            containerElement.innerHTML = ''; // Clear current content
+            if (gamesToRender.length === 0) {
+                 containerElement.innerHTML = '<p>No games found in this section.</p>';
+                 return;
+            }
+
+            gamesToRender.forEach(game => {
+                const gameCard = document.createElement('div'); // Use div, handle clicks with JS
+                gameCard.classList.add('game-card');
+                gameCard.dataset.gameId = game.id; // Store game ID for click handling
+
+                const pillsHtml = game.platforms.map(pill => `<span class="pill">${pill}</span>`).join('');
+
+                gameCard.innerHTML = `
+                    <div class="pills-container">
+                       ${pillsHtml}
+                    </div>
+                    <img src="${game.icon}" alt="${game.title} icon">
+                    <div class="game-title">${game.title}</div>
+                `;
+                containerElement.appendChild(gameCard);
+            });
+        }
+
+        // --- Navigation/View Switching ---
+
+        // Shows the homepage view and optionally filters/sorts games
+        function showHomepage(filter = 'home', genre = null) {
+            homepageView.style.display = 'block';
+            gameDetailView.style.display = 'none';
+            gameIframe.src = 'about:blank'; // Stop the iframe game if it was loaded
+
+            // Hide genre section by default and show default sections
+            genreGamesSection.style.display = 'none';
+            document.getElementById('trending-games').style.display = 'block';
+            document.getElementById('new-games').style.display = 'block';
+            document.getElementById('favorited-games').style.display = 'block';
+
+
+            if (genre) {
+                // Show specific genre section
+                const gamesToDisplay = games.filter(game => game.genres && game.genres.includes(genre)); // Check if genres exists
+                genreTitleElement.textContent = `${genre} Games`;
+                renderGameGrid(gamesToDisplay, genreGrid);
+                genreGamesSection.style.display = 'block';
+                document.getElementById('trending-games').style.display = 'none';
+                document.getElementById('new-games').style.display = 'none';
+                document.getElementById('favorited-games').style.display = 'none';
+
+            } else {
+                 // Render all default sections
+                 const trendingGames = games.filter(game => game.isTrending);
+                 const newGames = games.filter(game => game.isNew);
+                 const favoritedIds = getFavoritedGamesIds();
+                 const favoritedGames = games.filter(game => favoritedIds.includes(game.id));
+                 renderGameGrid(trendingGames, trendingGrid);
+                 renderGameGrid(newGames, newGrid);
+                 renderGameGrid(favoritedGames, favoritedGrid);
+                 // Handle random game navigation directly
+                 if (filter === 'random' && games.length > 0) {
+                     const randomIndex = Math.floor(Math.random() * games.length);
+                     const randomGame = games[randomIndex];
+                     // Use setTimeout to ensure homepage render completes before switching view
+                     setTimeout(() => {
+                         if (randomGame.launchType === 'modal') {
+                              openModal(randomGame.id); // Open modal for modal type
+                         } else {
+                              showGameDetail(randomGame.id); // Go to detail page for iframe type
+                         }
+                     }, 100);
+                     return;
+                 }
+            }
+             body.classList.remove('game-view-active');
+        }
+
+
+        // Shows the game detail view for a specific game ID (for iframe games)
+        function showGameDetail(gameId) {
+            const game = games.find(g => g.id === gameId);
+
+            if (!game || game.launchType === 'modal') { // Ensure it's an iframe game
+                showHomepage(); // Redirect to homepage if game is invalid
+                return;
+            }
+
+            homepageView.style.display = 'none';
+            gameDetailView.style.display = 'block';
+
+            gameTitleElement.textContent = game.title;
+            gameIframe.src = game.iframeSrc; // Set the iframe source
+            gameDescriptionElement.textContent = game.description || 'No description available.';
+
+            // Populate controls (handle optional properties)
+            gameControlsList.innerHTML = '';
+            if (game.controls && game.controls.length > 0) {
+                 game.controls.forEach(control => { const li = document.createElement('li'); li.textContent = control; gameControlsList.appendChild(li); });
+            } else {
+                 const li = document.createElement('li'); li.textContent = 'No specific controls listed.'; gameControlsList.appendChild(li);
+            }
+
+            // Populate tags (handle optional properties)
+            gameTagsList.innerHTML = '';
+            if (game.tags && game.tags.length > 0) {
+                 game.tags.forEach(tag => { const span = document.createElement('span'); span.classList.add('tag'); span.textContent = tag; gameTagsList.appendChild(span); });
+            } else {
+                gameTagsList.innerHTML = '<span>No tags listed.</span>';
+            }
+            history.pushState({ view: 'game', gameId: gameId }, game.title, `?game=${gameId}`);
+            body.classList.add('game-view-active');
+        }
+
+        // --- Modal Functions ---
+
+        function openModal(gameId) {
+             const game = games.find(g => g.id === gameId);
+             if (!game || game.launchType !== 'modal') return;
+
+             // --- Accessibility: Store focused element ---
+             elementFocusedBeforeModal = document.activeElement;
+
+             currentGameModal = game;
+
+             // --- Reset modal state and selected classes ---
+             selectedMode = null;
+             selectedUnblocker = 'none';
+             modalModeButtons.forEach(btn => btn.classList.remove('selected'));
+             modalUnblockButtons.forEach(btn => {
+                  btn.classList.remove('selected');
+                  if (btn.dataset.unblocker === 'none') btn.classList.add('selected');
+             });
+             modalGoButton.disabled = true;
+
+             // --- Show modal with animation ---
+             modalOverlay.classList.add('visible');
+
+             // --- Accessibility: Focus first element in modal ---
+             modalCloseBtn.focus();
+        }
+
+        function closeModal() {
+             // --- Trigger closing animation ---
+             modalOverlay.classList.add('closing');
+
+             // --- Remove after animation completes ---
+             modalOverlay.addEventListener('animationend', () => {
+                 modalOverlay.classList.remove('visible', 'closing');
+                 currentGameModal = null;
+                 // --- Accessibility: Restore focus ---
+                 if (elementFocusedBeforeModal) elementFocusedBeforeModal.focus();
+             }, { once: true }); // Important: listener removes itself after one run
+        }
+
+        // --- Event Listeners ---
+
+        // Game card clicks (using event delegation on the main-content area)
+        mainContent.addEventListener('click', (event) => {
+            const gameCard = event.target.closest('.game-card');
+            if (!gameCard) return;
+            event.preventDefault();
+            const gameId = gameCard.dataset.gameId;
+            const game = games.find(g => g.id === gameId);
+            if (game) {
+                 if (game.launchType === 'modal') openModal(gameId);
+                 else showGameDetail(gameId);
+            }
+        });
+
+        // Search input
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase().trim();
+            searchResultsContainer.innerHTML = '';
+            if (!query) {
+                searchResultsContainer.classList.remove('visible');
+                return;
+            }
+            const filteredGames = games.filter(game => game.title.toLowerCase().includes(query));
+            if (filteredGames.length > 0) {
+                 filteredGames.forEach(game => {
+                    const resultItem = document.createElement('div');
+                    resultItem.innerHTML = `<img src="${game.icon}" alt=""> <span>${game.title}</span>`;
+                    resultItem.addEventListener('click', () => {
+                        searchInput.value = '';
+                        searchResultsContainer.classList.remove('visible');
+                        if (game.launchType === 'modal') openModal(game.id);
+                        else showGameDetail(game.id);
+                    });
+                    searchResultsContainer.appendChild(resultItem);
+                });
+                searchResultsContainer.classList.add('visible');
+            } else {
+                searchResultsContainer.classList.remove('visible');
+            }
+        });
+
+        // Hide search results when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!searchInput.parentElement.contains(event.target)) {
+                searchResultsContainer.classList.remove('visible');
+            }
+        });
+
+        // --- Modal Event Listeners ---
+
+        // Close modal using the 'X' button or overlay click
+        modalOverlay.addEventListener('click', (event) => {
+             if (event.target === modalOverlay || event.target.closest('.modal-close-btn')) {
+                 closeModal();
+             }
+        });
+
+        // Select Mode button handler
+        modalModeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                modalModeButtons.forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+                selectedMode = button.dataset.mode;
+                modalGoButton.disabled = false;
+            });
+        });
+
+        // Select Unblocker button handler
+        modalUnblockButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                modalUnblockButtons.forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+                selectedUnblocker = button.dataset.unblocker;
+            });
+        });
+
+        // Go button handler
+        modalGoButton.addEventListener('click', () => {
+            if (!currentGameModal || !selectedMode) return;
+
+            let targetUrl;
+            if (selectedMode === 'normal') targetUrl = currentGameModal.normalUrl;
+            else if (selectedMode === 'fullscreen') targetUrl = currentGameModal.fullscreenUrl;
+
+            if (!targetUrl) {
+                alert('Error: Game URL is missing.');
+                return;
+            }
+
+            let finalUrl = targetUrl;
+            if (selectedUnblocker === 'proxy1') finalUrl = PROXY_URL_1 + encodeURIComponent(targetUrl);
+            else if (selectedUnblocker === 'proxy2') finalUrl = PROXY_URL_2 + encodeURIComponent(targetUrl);
+
+            window.open(finalUrl, '_blank');
+            closeModal();
+        });
+
+        // --- Keyboard Navigation & Accessibility ---
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modalOverlay.classList.contains('visible')) {
+                closeModal();
+            }
+
+            // --- Focus Trapping in Modal ---
+            if (event.key === 'Tab' && modalOverlay.classList.contains('visible')) {
+                const focusableElements = modalOverlay.querySelectorAll('button');
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+
+                if (event.shiftKey) { // Shift + Tab
+                    if (document.activeElement === firstElement) {
+                        lastElement.focus();
+                        event.preventDefault();
+                    }
+                } else { // Tab
+                    if (document.activeElement === lastElement) {
+                        firstElement.focus();
+                        event.preventDefault();
+                    }
+                }
+            }
+        });
+
+
+        // --- Simplified Initial Load & History ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameId = urlParams.get('game');
+            const genre = urlParams.get('genre');
+
+            if (gameId) showGameDetail(gameId);
+            else if (genre) showHomepage('genre', genre);
+            else showHomepage('home');
+
+            // Set default modal states visually
+            modalGoButton.disabled = true;
+            modalUnblockButtons.forEach(btn => {
+                 if (btn.dataset.unblocker === 'none') btn.classList.add('selected');
+            });
+        });
+
+        window.onpopstate = (event) => {
+             // Close modal if it's open, otherwise navigate
+             if (modalOverlay.classList.contains('visible')) {
+                 closeModal();
+             } else if (event.state && event.state.view === 'game') {
+                 showGameDetail(event.state.gameId);
+             } else {
+                 showHomepage('home');
+             }
+        };
+
+        // --- Sidebar Toggle & Other minor listeners ---
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            body.classList.toggle('sidebar-is-collapsed');
+        });
+        document.querySelector('.sidebar-nav').addEventListener('click', (event) => {
+            const link = event.target.closest('a');
+            if (!link) return;
+            event.preventDefault();
+            const section = link.dataset.section;
+            const genre = link.dataset.genre;
+            if (section) showHomepage(section);
+            else if (genre) showHomepage('genre', genre);
+        });
+        fullscreenBtn.addEventListener('click', () => {
+            gameIframe.requestFullscreen?.();
+        });
+    </script>
 </body>
 </html>
