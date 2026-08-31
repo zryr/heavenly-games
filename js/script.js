@@ -71,74 +71,168 @@ document.addEventListener('DOMContentLoaded', () => {
     const suggestionModal = document.getElementById('suggestion-modal');
 
 
-    // --- Settings ---
+    // --- Settings & Cloaking References ---
+    const cloakTitleInput = document.getElementById('cloak-title-input');
+    const cloakIconInput = document.getElementById('cloak-icon-input');
+    const cloakPresetsContainer = document.getElementById('cloak-presets-container');
+    const cloakModeButtons = document.querySelectorAll('.cloak-mode-btn');
+
+    const DEFAULT_TITLE = 'Heaven';
+    const DEFAULT_ICON = 'https://www.google.com/s2/favicons?domain=google.com&sz=64';
+    const DEFAULT_CLOAK_TITLE = 'Classes';
+    const DEFAULT_CLOAK_ICON = 'https://www.google.com/s2/favicons?domain=classroom.google.com&sz=64';
+
     const PRESETS = [
-        { title: 'Heaven', icon: 'images/drive-mad.webp' },
-        { title: 'Google', icon: 'https://www.google.com/s2/favicons?domain=google.com' },
-        { title: 'YouTube', icon: 'https://www.google.com/s2/favicons?domain=youtube.com' },
-        { title: 'Discord', icon: 'https://www.google.com/s2/favicons?domain=discord.com' },
-        { title: 'Google Classroom', icon: 'https://www.google.com/s2/favicons?domain=classroom.google.com' },
-        { title: 'ClassLink', icon: 'https://www.google.com/s2/favicons?domain=classlink.com' },
-        { title: 'Canvas', icon: 'https://www.google.com/s2/favicons?domain=instructure.com' },
-        { title: 'Schoology', icon: 'https://www.google.com/s2/favicons?domain=schoology.com' }
+        { title: 'Google Classroom', icon: 'https://www.google.com/s2/favicons?domain=classroom.google.com&sz=64' },
+        { title: 'Google', icon: 'https://www.google.com/s2/favicons?domain=google.com&sz=64' },
+        { title: 'Google Drive', icon: 'https://www.google.com/s2/favicons?domain=drive.google.com&sz=64' },
+        { title: 'YouTube', icon: 'https://www.google.com/s2/favicons?domain=youtube.com&sz=64' },
+        { title: 'Canvas', icon: 'https://www.google.com/s2/favicons?domain=instructure.com&sz=64' },
+        { title: 'Schoology', icon: 'https://www.google.com/s2/favicons?domain=schoology.com&sz=64' },
+        { title: 'ClassLink', icon: 'https://www.google.com/s2/favicons?domain=classlink.com&sz=64' },
+        { title: 'Discord', icon: 'https://www.google.com/s2/favicons?domain=discord.com&sz=64' }
     ];
 
+    let currentCloakMode = localStorage.getItem('cloakMode') || 'switch'; // 'off', 'switch', 'always'
+    let customTitle = localStorage.getItem('siteTitle') || DEFAULT_TITLE;
+    let customIcon = localStorage.getItem('siteIcon') || DEFAULT_ICON;
+    let cloakTitle = localStorage.getItem('cloakTitle') || DEFAULT_CLOAK_TITLE;
+    let cloakIcon = localStorage.getItem('cloakIcon') || DEFAULT_CLOAK_ICON;
+    let isTabBlurred = false;
+
+    function setDocumentFavicon(url) {
+        let link = document.querySelector('link[rel="shortcut icon"]');
+        if (!link) {
+            link = document.createElement('link');
+            link.rel = 'shortcut icon';
+            document.head.appendChild(link);
+        }
+        link.href = url;
+    }
+
+    function applyActiveTabDisplay() {
+        if (currentCloakMode === 'always') {
+            document.title = cloakTitle;
+            setDocumentFavicon(cloakIcon);
+        } else if (currentCloakMode === 'switch' && isTabBlurred) {
+            document.title = cloakTitle;
+            setDocumentFavicon(cloakIcon);
+        } else {
+            document.title = customTitle;
+            setDocumentFavicon(customIcon);
+        }
+    }
+
     function applyAppearanceSettings() {
-        const savedTitle = localStorage.getItem('siteTitle');
-        const savedIcon = localStorage.getItem('siteIcon');
+        siteTitleInput.value = customTitle;
+        siteIconInput.value = customIcon;
+        cloakTitleInput.value = cloakTitle;
+        cloakIconInput.value = cloakIcon;
 
-        if (savedTitle) {
-            document.title = savedTitle;
-            siteTitleInput.value = savedTitle;
-        }
-
-        if (savedIcon) {
-            document.querySelector('link[rel="shortcut icon"]').href = savedIcon;
-            siteIconInput.value = savedIcon;
-        }
-
-        // Populate preset icons
+        // Populate Main Preset Icons
         presetIconsContainer.innerHTML = '';
         PRESETS.forEach(preset => {
             const img = document.createElement('img');
             img.src = preset.icon;
+            img.title = preset.title;
             img.classList.add('preset-icon');
+            if (customIcon === preset.icon) img.classList.add('selected');
+
             img.addEventListener('click', () => {
-                siteIconInput.value = preset.icon;
-                updateIcon(preset.icon);
-                siteTitleInput.value = preset.title;
-                updateTitle(preset.title);
-                document.querySelector('.preset-icon.selected')?.classList.remove('selected');
+                customTitle = preset.title;
+                customIcon = preset.icon;
+                siteTitleInput.value = customTitle;
+                siteIconInput.value = customIcon;
+                localStorage.setItem('siteTitle', customTitle);
+                localStorage.setItem('siteIcon', customIcon);
+
+                presetIconsContainer.querySelectorAll('.preset-icon').forEach(el => el.classList.remove('selected'));
                 img.classList.add('selected');
+                applyActiveTabDisplay();
             });
             presetIconsContainer.appendChild(img);
         });
-    }
 
-    function updateTitle(newTitle) {
-        document.title = newTitle;
-        try {
-            localStorage.setItem('siteTitle', newTitle);
-        } catch (e) {
-            console.warn('Could not save site title to localStorage.', e);
-        }
-    }
+        // Populate Cloak Preset Icons
+        cloakPresetsContainer.innerHTML = '';
+        PRESETS.forEach(preset => {
+            const img = document.createElement('img');
+            img.src = preset.icon;
+            img.title = preset.title;
+            img.classList.add('preset-icon');
+            if (cloakIcon === preset.icon) img.classList.add('selected');
 
-    function updateIcon(newIconUrl) {
-        document.querySelector('link[rel="shortcut icon"]').href = newIconUrl;
-        try {
-            localStorage.setItem('siteIcon', newIconUrl);
-        } catch (e) {
-            console.warn('Could not save site icon to localStorage.', e);
-        }
+            img.addEventListener('click', () => {
+                cloakTitle = preset.title;
+                cloakIcon = preset.icon;
+                cloakTitleInput.value = cloakTitle;
+                cloakIconInput.value = cloakIcon;
+                localStorage.setItem('cloakTitle', cloakTitle);
+                localStorage.setItem('cloakIcon', cloakIcon);
+
+                cloakPresetsContainer.querySelectorAll('.preset-icon').forEach(el => el.classList.remove('selected'));
+                img.classList.add('selected');
+                applyActiveTabDisplay();
+            });
+            cloakPresetsContainer.appendChild(img);
+        });
+
+        // Update Cloak Mode Buttons UI
+        cloakModeButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.mode === currentCloakMode);
+        });
+
+        applyActiveTabDisplay();
     }
 
     siteTitleInput.addEventListener('input', (e) => {
-        updateTitle(e.target.value);
+        customTitle = e.target.value || DEFAULT_TITLE;
+        localStorage.setItem('siteTitle', customTitle);
+        applyActiveTabDisplay();
     });
 
     siteIconInput.addEventListener('input', (e) => {
-        updateIcon(e.target.value);
+        customIcon = e.target.value || DEFAULT_ICON;
+        localStorage.setItem('siteIcon', customIcon);
+        applyActiveTabDisplay();
+    });
+
+    cloakTitleInput.addEventListener('input', (e) => {
+        cloakTitle = e.target.value || DEFAULT_CLOAK_TITLE;
+        localStorage.setItem('cloakTitle', cloakTitle);
+        applyActiveTabDisplay();
+    });
+
+    cloakIconInput.addEventListener('input', (e) => {
+        cloakIcon = e.target.value || DEFAULT_CLOAK_ICON;
+        localStorage.setItem('cloakIcon', cloakIcon);
+        applyActiveTabDisplay();
+    });
+
+    cloakModeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            currentCloakMode = button.dataset.mode;
+            localStorage.setItem('cloakMode', currentCloakMode);
+            cloakModeButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            applyActiveTabDisplay();
+        });
+    });
+
+    // Window Blur / Focus Event Listeners for Switch-on-Tab-Off Cloaking
+    window.addEventListener('blur', () => {
+        isTabBlurred = true;
+        applyActiveTabDisplay();
+    });
+
+    window.addEventListener('focus', () => {
+        isTabBlurred = false;
+        applyActiveTabDisplay();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        isTabBlurred = document.hidden;
+        applyActiveTabDisplay();
     });
 
     resetSettingsBtn.addEventListener('click', async () => {
@@ -146,21 +240,55 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirmed) {
             localStorage.removeItem('siteTitle');
             localStorage.removeItem('siteIcon');
+            localStorage.removeItem('cloakTitle');
+            localStorage.removeItem('cloakIcon');
+            localStorage.removeItem('cloakMode');
             window.location.reload();
         }
     });
 
     stealthBtn.addEventListener('click', () => {
+        const activeTitle = (currentCloakMode === 'off') ? customTitle : cloakTitle;
+        const activeFavicon = (currentCloakMode === 'off') ? customIcon : cloakIcon;
+
         const newWindow = window.open('about:blank', '_blank');
         if (newWindow) {
-            const iframe = newWindow.document.createElement('iframe');
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-            iframe.style.border = 'none';
-            iframe.src = window.location.origin + window.location.pathname;
-            newWindow.document.body.style.margin = '0';
-            newWindow.document.body.appendChild(iframe);
-            window.close();
+            const doc = newWindow.document;
+            doc.open();
+            doc.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${activeTitle}</title>
+                    <link rel="shortcut icon" href="${activeFavicon}" type="image/x-icon">
+                    <style>
+                        html, body {
+                            margin: 0;
+                            padding: 0;
+                            width: 100%;
+                            height: 100%;
+                            overflow: hidden;
+                            background-color: #0d0f17;
+                        }
+                        iframe {
+                            width: 100%;
+                            height: 100%;
+                            border: none;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <iframe src="${window.location.href}"></iframe>
+                </body>
+                </html>
+            `);
+            doc.close();
+            try {
+                window.location.replace('https://classroom.google.com');
+            } catch (e) {
+                // Ignore if replace fails
+            }
         } else {
             showToast('Popup blocked! Please allow popups to use Stealth Mode.');
         }
@@ -305,8 +433,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     case 'keyboard needed':
                         iconClass = 'fas fa-keyboard';
                         break;
+                    case 'touchscreen supported':
                     case 'mobile supported':
-                        iconClass = 'fas fa-mobile-alt';
+                        iconClass = 'fas fa-hand-pointer';
                         break;
                     default:
                         iconClass = 'fas fa-tag';
@@ -507,8 +636,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             case 'keyboard needed':
                                 iconClass = 'fas fa-keyboard';
                                 break;
+                            case 'touchscreen supported':
                             case 'mobile supported':
-                                iconClass = 'fas fa-mobile-alt';
+                                iconClass = 'fas fa-hand-pointer';
                                 break;
                             case 'arcade':
                                 iconClass = 'fas fa-gamepad';

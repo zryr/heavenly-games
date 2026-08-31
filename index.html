@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heaven</title>
-    <link rel="shortcut icon" href="images/drive-mad.webp" type="image/x-icon">
+    <link rel="shortcut icon" href="https://www.google.com/s2/favicons?domain=google.com&sz=64" type="image/x-icon">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -200,35 +200,60 @@
             <section id="settings-view" style="display: none;">
                 <h2>Settings</h2>
 
-                <div class="settings-section">
-                    <h3><i class="fas fa-paint-brush"></i> Appearance</h3>
-                    <div class="setting-item">
-                        <label for="site-title-input">Site Title</label>
-                        <input type="text" id="site-title-input" placeholder="Enter new title">
-                    </div>
-                    <div class="setting-item">
-                        <label for="site-icon-input">Site Icon URL</label>
-                        <input type="text" id="site-icon-input" placeholder="Enter new icon URL">
-                    </div>
-                    <div class="setting-item">
-                        <label>Preset Icons</label>
-                        <div class="preset-icons" id="preset-icons-container">
-                            <!-- Presets will be loaded here by JS -->
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-paint-brush"></i> Appearance</h3>
+                        <div class="setting-item">
+                            <label for="site-title-input">Site Title</label>
+                            <input type="text" id="site-title-input" placeholder="Enter new title">
+                        </div>
+                        <div class="setting-item">
+                            <label for="site-icon-input">Site Icon URL</label>
+                            <input type="text" id="site-icon-input" placeholder="Enter new icon URL">
+                        </div>
+                        <div class="setting-item">
+                            <label>Preset Icons</label>
+                            <div class="preset-icons" id="preset-icons-container">
+                                <!-- Presets will be loaded here by JS -->
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="settings-section">
-                    <h3><i class="fas fa-user-secret"></i> Stealth</h3>
-                    <div class="setting-item">
-                        <button id="stealth-btn" class="modal-button">Open Site in about:blank</button>
+                    <div class="settings-card">
+                        <h3><i class="fas fa-user-secret"></i> Tab Cloaking & Disguise</h3>
+                        <div class="setting-item">
+                            <label>Cloaking Mode</label>
+                            <div class="cloak-mode-group">
+                                <button class="cloak-mode-btn" data-mode="off">Disabled</button>
+                                <button class="cloak-mode-btn" data-mode="switch">Switch on Blur (Default)</button>
+                                <button class="cloak-mode-btn" data-mode="always">Always Cloaked</button>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label for="cloak-title-input">Cloaked Title</label>
+                            <input type="text" id="cloak-title-input" placeholder="e.g. Google Classroom">
+                        </div>
+                        <div class="setting-item">
+                            <label for="cloak-icon-input">Cloaked Favicon URL</label>
+                            <input type="text" id="cloak-icon-input" placeholder="Enter cloaked icon URL">
+                        </div>
+                        <div class="setting-item">
+                            <label>Cloak Presets</label>
+                            <div class="preset-icons" id="cloak-presets-container">
+                                <!-- Cloak presets will be loaded here by JS -->
+                            </div>
+                        </div>
+                        <div class="setting-item mt-3">
+                            <button id="stealth-btn" class="modal-button btn-stealth"><i class="fas fa-external-link-alt"></i> Open Site in about:blank</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="settings-section">
-                    <h3><i class="fas fa-undo"></i> Reset</h3>
-                     <div class="setting-item">
-                        <button id="reset-settings-btn" class="btn-danger">Reset All Settings</button>
+                    <div class="settings-card danger-card">
+                        <h3><i class="fas fa-undo"></i> Reset</h3>
+                        <p class="setting-desc">Reset all site titles, favicons, cloak preferences, and user options back to default.</p>
+                        <div class="setting-item">
+                            <button id="reset-settings-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> Reset All Settings</button>
+                        </div>
                     </div>
                 </div>
 
@@ -332,7 +357,7 @@
                 <div class="filter-group">
                     <label><input type="checkbox" name="platform" value="PC Only"> PC Only</label>
                     <label><input type="checkbox" name="platform" value="Keyboard Needed"> Keyboard Needed</label>
-                    <label><input type="checkbox" name="platform" value="Mobile Supported"> Mobile Supported</label>
+                    <label><input type="checkbox" name="platform" value="Touchscreen Supported"> Touchscreen Supported</label>
                 </div>
                 <button id="apply-filters-btn" class="modal-button">Apply Filters</button>
             </div>
