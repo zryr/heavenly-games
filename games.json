@@ -10,7 +10,7 @@
       "Steer backward - S, A, Z, Down arrow, Left arrow"
     ],
     "tags": ["Car", "Strategy", "Driving", "Skill"],
-    "platforms": ["Mobile Supported"],
+    "platforms": ["Touchscreen Supported"],
     "isTrending": true,
     "isNew": true,
     "isFavorited": false,
@@ -40,7 +40,7 @@
         "Touch center of screen to pause on mobile"
     ],
     "tags": ["Driving", "Racing"],
-    "platforms": ["Keyboard Needed"],
+    "platforms": ["Touchscreen Supported", "Keyboard Needed"],
     "isTrending": true,
     "isNew": true,
     "isFavorited": false,

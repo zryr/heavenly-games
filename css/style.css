@@ -158,8 +158,10 @@ body {
 
 .sidebar {
     width: var(--sidebar-width-expanded);
-    background-color: #252528; /* Darker shade */
-    border-right: 1px solid #333;
+    background: rgba(24, 26, 36, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
     color: var(--text-color);
     padding: 20px;
     box-sizing: border-box;
@@ -355,21 +357,34 @@ body {
 
 .game-card .pills-container {
     position: absolute;
-    top: 5px; /* Adjust positioning relative to card top */
-    right: 5px; /* Adjust positioning relative to card right */
+    top: 10px;
+    right: 10px;
     display: flex;
-    flex-direction: row; /* Stack pills horizontally */
-    gap: 3px;
-    z-index: 5; /* Ensure pills are above the image */
+    flex-direction: row;
+    gap: 5px;
+    z-index: 5;
 }
 
 .game-card .pill {
-    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent dark */
-    color: #fff;
-    font-size: 0.7em;
-    padding: 3px 6px;
-    border-radius: 10px; /* Rounded pill shape */
-    white-space: nowrap; /* Prevent text wrap */
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--accent-cyan);
+    font-size: 0.75em;
+    padding: 5px 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 255, 255, 0.25);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.game-card:hover .pill {
+    border-color: var(--accent-cyan);
+    transform: scale(1.05);
 }
 
 .game-card .game-title {

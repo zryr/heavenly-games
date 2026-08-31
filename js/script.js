@@ -433,8 +433,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     case 'keyboard needed':
                         iconClass = 'fas fa-keyboard';
                         break;
+                    case 'touchscreen supported':
                     case 'mobile supported':
-                        iconClass = 'fas fa-mobile-alt';
+                        iconClass = 'fas fa-hand-pointer';
                         break;
                     default:
                         iconClass = 'fas fa-tag';
@@ -635,8 +636,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             case 'keyboard needed':
                                 iconClass = 'fas fa-keyboard';
                                 break;
+                            case 'touchscreen supported':
                             case 'mobile supported':
-                                iconClass = 'fas fa-mobile-alt';
+                                iconClass = 'fas fa-hand-pointer';
                                 break;
                             case 'arcade':
                                 iconClass = 'fas fa-gamepad';
